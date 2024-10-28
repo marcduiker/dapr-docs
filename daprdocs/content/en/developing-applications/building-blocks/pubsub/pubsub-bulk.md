@@ -336,14 +336,13 @@ Status | Description
 `RETRY` | Message to be retried by Dapr
 `DROP` | Warning is logged and message is dropped
 
-Please refer [Expected HTTP Response for Bulk Subscribe]({{< ref pubsub_api.md >}}) for further insights on response.
+Refer to [Expected HTTP Response for Bulk Subscribe]({{< ref pubsub_api.md >}}) for further insights on response.
 
 ### Example
 
-Please refer following code samples for how to use Bulk Subscribe:
+The following code examples demonstrate how to use Bulk Subscribe.
 
-{{< tabs "Java" "JavaScript" ".NET" >}}
-
+{{< tabs "Java" "JavaScript" ".NET" "Python" >}}
 {{% codetab %}}
 
 ```java
@@ -471,7 +470,57 @@ public class BulkMessageController : ControllerBase
 
 {{% /codetab %}}
 
+{{% codetab %}}
+
+```python
+import requests
+import json
+from flask import Flask, request
+
+app = Flask(__name__)
+
+# Define the Dapr sidecar URL
+DAPR_URL = "http://localhost:3500/v1.0"
+
+# Define the bulk subscribe endpoint
+BULK_SUBSCRIBE_ENDPOINT = f"{DAPR_URL}/subscribe/bulk"
+
+# Define the subscription details
+subscription = {
+    "pubsubname": "my-pubsub-name",
+    "topic": "topic-a",
+    "route": "/events",
+    "metadata": {
+        "bulkSubscribe": "true",
+        "maxMessagesCount": "100",
+        "maxAwaitDurationMs": "40"
+    }
+}
+
+# Register the subscription
+response = requests.post(BULK_SUBSCRIBE_ENDPOINT, json=subscription)
+
+if response.status_code == 200:
+    print("Bulk subscription registered successfully!")
+else:
+    print(f"Failed to register bulk subscription: {response.status_code} - {response.text}")
+
+# Define the event handler
+@app.route('/events', methods=['POST'])
+def handle_events():
+    events = request.json
+    for event in events:
+        print(f"Received event: {event}")
+    return '', 200
+
+if __name__ == '__main__':
+    app.run(port=5000)
+```
+
+{{% /codetab %}}
+
 {{< /tabs >}}
+
 ## How components handle publishing and subscribing to bulk messages
 
 For event publish/subscribe, two kinds of network transfers are involved.
