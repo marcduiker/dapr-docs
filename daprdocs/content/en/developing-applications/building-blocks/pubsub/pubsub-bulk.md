@@ -471,46 +471,48 @@ public class BulkMessageController : ControllerBase
 {{% /codetab %}}
 
 {{% codetab %}}
+Currently, you can only bulk subscribe in Python using an HTTP client. 
 
 ```python
 import requests
 import json
-from flask import Flask, request
-
-app = Flask(__name__)
 
 # Define the Dapr sidecar URL
 DAPR_URL = "http://localhost:3500/v1.0"
 
-# Define the bulk subscribe endpoint
-BULK_SUBSCRIBE_ENDPOINT = f"{DAPR_URL}/subscribe/bulk"
+# Define the subscription endpoint
+SUBSCRIBE_URL = f"{DAPR_URL}/subscribe"
 
-# Define the subscription details
+# Define the bulk subscribe configuration
 subscription = {
-    "pubsubname": "my-pubsub-name",
-    "topic": "topic-a",
-    "route": "/events",
-    "metadata": {
-        "bulkSubscribe": "true",
-        "maxMessagesCount": "100",
-        "maxAwaitDurationMs": "40"
+    "pubsubname": "order-pub-sub",
+    "topic": "orders",
+    "route": "/checkout",
+    "bulkSubscribe": {
+        "enabled": True,
+        "maxMessagesCount": 100,
+        "maxAwaitDurationMs": 40
     }
 }
 
-# Register the subscription
-response = requests.post(BULK_SUBSCRIBE_ENDPOINT, json=subscription)
+# Send the subscription request
+response = requests.post(SUBSCRIBE_URL, json=subscription)
 
 if response.status_code == 200:
-    print("Bulk subscription registered successfully!")
+    print("Bulk subscription created successfully!")
 else:
-    print(f"Failed to register bulk subscription: {response.status_code} - {response.text}")
+    print(f"Failed to create bulk subscription: {response.status_code} - {response.text}")
 
-# Define the event handler
-@app.route('/events', methods=['POST'])
-def handle_events():
-    events = request.json
-    for event in events:
-        print(f"Received event: {event}")
+# Define the endpoint to handle incoming messages
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    messages = request.json
+    for message in messages:
+        print(f"Received message: {message}")
     return '', 200
 
 if __name__ == '__main__':
