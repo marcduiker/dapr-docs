@@ -221,7 +221,7 @@ To perform a delete file operation, invoke the Sftp binding with a `POST` method
 
 #### Response
 
-An HTTP 204 (No Content) and empty body will be returned if successful.
+An HTTP 204 (No Content) and empty body is returned if successful.
 
 ## Related links
 
