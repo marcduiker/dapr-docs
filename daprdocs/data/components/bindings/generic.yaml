@@ -134,7 +134,7 @@
   features:
     input: true
     output: false
-- component: Sftp
+- component: SFTP
   link: sftp
   state: Alpha
   version: v1
