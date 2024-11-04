@@ -1,6 +1,6 @@
 ---
 type: docs
-title: "Sftp binding spec"
+title: "SFTP binding spec"
 linkTitle: "Sftp"
 description: "Detailed documentation on the Sftp binding component"
 aliases:
