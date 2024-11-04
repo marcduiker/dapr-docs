@@ -2,7 +2,7 @@
 type: docs
 title: "SFTP binding spec"
 linkTitle: "Sftp"
-description: "Detailed documentation on the Sftp binding component"
+description: "Detailed documentation on the Secure File Transfer Protocol (SFTP) binding component"
 aliases:
   - "/operations/components/setup-bindings/supported-bindings/sftp/"
 ---
