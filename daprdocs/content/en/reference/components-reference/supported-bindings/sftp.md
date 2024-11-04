@@ -98,7 +98,7 @@ To perform a create file operation, invoke the Sftp binding with a `POST` method
 
 #### Response
 
-The response body will contain the following JSON:
+The response body contains the following JSON:
 
 ```json
 {
