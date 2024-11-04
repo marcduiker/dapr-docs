@@ -9,7 +9,7 @@ aliases:
 
 ## Component format
 
-To set up the Sftp binding, create a component of type `bindings.sftp`. See this guide on how to create and apply a binding configuration.
+To set up the SMTP binding, create a component of type `bindings.sftp`. See this guide on how to create and apply a binding configuration.
 
 ```yaml
 apiVersion: dapr.io/v1alpha1
