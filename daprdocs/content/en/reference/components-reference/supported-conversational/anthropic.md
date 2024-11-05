@@ -7,7 +7,7 @@ description: Detailed information on the Anthropic conversational component
 
 ## Component format
 
-A Dapr `conversaion.yaml` component file has the following structure:
+A Dapr `conversation.yaml` component file has the following structure:
 
 ```yaml
 apiVersion: dapr.io/v1alpha1
