@@ -70,6 +70,22 @@ spec:
     enabled: false
 ```
 
+## Configuring metrics for error codes
+
+You can enable additional metrics for [Dapr API error codes](https://github.com/dapr/dapr/blob/master/docs/reference/api/error_codes/) by setting `spec.metrics.recordErrorCodes` to `true`. See the specific metrics described in the [Dapr development docs](https://github.com/dapr/dapr/blob/master/docs/development/dapr-metrics.md).
+
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: tracing
+  namespace: default
+spec:
+  metrics:
+    enabled: true
+    recordErrorCodes: true
+```
+
 ## Optimizing HTTP metrics reporting with path matching
 
 When invoking Dapr using HTTP, metrics are created for each requested method by default. This can result in a high number of metrics, known as high cardinality, which can impact memory usage and CPU.
