@@ -6,9 +6,7 @@ weight: 1000
 description: "Overview of the conversation API building block"
 ---
 
-Many large language model servers or toolkits provide their own APIs. Due to hardcode and API differences, migrating between these servers or toolkits can prove difficult.
-
-The conversation API building block works as an abstraction layer across those APIs to ease migration.
+Using the Dapr conversation API you can reduce the complexity of interacting with LLMS and enable critical security and reliability functionality with out-of-the-box features like prompt caching and PII data obfuscation.
 
 ## Features
 
