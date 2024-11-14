@@ -474,49 +474,40 @@ public class BulkMessageController : ControllerBase
 Currently, you can only bulk subscribe in Python using an HTTP client. 
 
 ```python
-import requests
 import json
-
-# Define the Dapr sidecar URL
-DAPR_URL = "http://localhost:3500/v1.0"
-
-# Define the subscription endpoint
-SUBSCRIBE_URL = f"{DAPR_URL}/subscribe"
-
-# Define the bulk subscribe configuration
-subscription = {
-    "pubsubname": "order-pub-sub",
-    "topic": "orders",
-    "route": "/checkout",
-    "bulkSubscribe": {
-        "enabled": True,
-        "maxMessagesCount": 100,
-        "maxAwaitDurationMs": 40
-    }
-}
-
-# Send the subscription request
-response = requests.post(SUBSCRIBE_URL, json=subscription)
-
-if response.status_code == 200:
-    print("Bulk subscription created successfully!")
-else:
-    print(f"Failed to create bulk subscription: {response.status_code} - {response.text}")
-
-# Define the endpoint to handle incoming messages
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+@app.route('/dapr/subscribe', methods=['GET'])
+def subscribe():
+    # Define the bulk subscribe configuration
+    subscriptions = [{
+        "pubsubname": "pubsub",
+        "topic": "TOPIC_A",
+        "route": "/checkout",
+        "bulkSubscribe": {
+            "enabled": True,
+            "maxMessagesCount": 3,
+            "maxAwaitDurationMs": 40
+        }
+    }]
+    print('Dapr pub/sub is subscribed to: ' + json.dumps(subscriptions))
+    return jsonify(subscriptions)
+
+
+# Define the endpoint to handle incoming messages
 @app.route('/checkout', methods=['POST'])
 def checkout():
     messages = request.json
+    print(messages)
     for message in messages:
         print(f"Received message: {message}")
-    return '', 200
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 if __name__ == '__main__':
     app.run(port=5000)
+
 ```
 
 {{% /codetab %}}
