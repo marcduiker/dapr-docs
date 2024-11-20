@@ -10,6 +10,15 @@ Using the Dapr conversation API you can reduce the complexity of interacting wit
 
 ## Features
 
+### Supported SDKs
+
+You can use the following SDKs to author a workflow.
+
+| Language stack | Package |
+| - | - |
+| .NET | [Dapr.AI.Conversation](todo) |
+| Rust | [converse](https://github.com/dapr/rust-sdk/blob/main/dapr/src/client.rs#L542) |
+| Go | [conversation](https://github.com/dapr/go-sdk/tree/main/client/conversation.go) |
 
 ## Try out pub/sub
 
