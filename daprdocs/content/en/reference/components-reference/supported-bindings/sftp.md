@@ -1,7 +1,7 @@
 ---
 type: docs
 title: "SFTP binding spec"
-linkTitle: "Sftp"
+linkTitle: "SFTP"
 description: "Detailed documentation on the Secure File Transfer Protocol (SFTP) binding component"
 aliases:
   - "/operations/components/setup-bindings/supported-bindings/sftp/"
@@ -9,7 +9,7 @@ aliases:
 
 ## Component format
 
-To set up the SMTP binding, create a component of type `bindings.sftp`. See this guide on how to create and apply a binding configuration.
+To set up the SFTP binding, create a component of type `bindings.sftp`. See [this guide]({{ ref bindings-overview.md }}) on how to create and apply a binding configuration.
 
 ```yaml
 apiVersion: dapr.io/v1alpha1
@@ -45,7 +45,7 @@ spec:
 | Field              | Required | Binding support |  Details | Example |
 |--------------------|:--------:|------------|-----|---------|
 | `rootPath` | Y | Output | Root path for default working directory | `"/path"` |
-| `address`             | Y        | Output |  Address of Sftp server | `"localhost:22"` |
+| `address`             | Y        | Output |  Address of SFTP server | `"localhost:22"` |
 | `username`           | Y        | Output | Username for authentication | `"username"` |
 | `password`          | N        | Output | Password for username/password authentication | `"password"` |
 | `privateKey`          | N        | Output | Private key for public key authentication | <pre>"\|-<br>-----BEGIN OPENSSH PRIVATE KEY-----<br>*****************<br>-----END OPENSSH PRIVATE KEY-----"</pre> |
@@ -65,7 +65,7 @@ This component supports **output binding** with the following operations:
 
 ### Create file
 
-To perform a create file operation, invoke the Sftp binding with a `POST` method and the following JSON body:
+To perform a create file operation, invoke the SFTP binding with a `POST` method and the following JSON body:
 
 ```json
 {
@@ -109,7 +109,7 @@ The response body contains the following JSON:
 
 ### Get file
 
-To perform a get file operation, invoke the Sftp binding with a `POST` method and the following JSON body:
+To perform a get file operation, invoke the SFTP binding with a `POST` method and the following JSON body:
 
 ```json
 {
@@ -145,7 +145,7 @@ The response body contains the value stored in the file.
 
 ### List files
 
-To perform a list files operation, invoke the Sftp binding with a `POST` method and the following JSON body:
+To perform a list files operation, invoke the SFTP binding with a `POST` method and the following JSON body:
 
 ```json
 {
@@ -189,7 +189,7 @@ The response is a JSON array of file names.
 
 ### Delete file
 
-To perform a delete file operation, invoke the Sftp binding with a `POST` method and the following JSON body:
+To perform a delete file operation, invoke the SFTP binding with a `POST` method and the following JSON body:
 
 ```json
 {
