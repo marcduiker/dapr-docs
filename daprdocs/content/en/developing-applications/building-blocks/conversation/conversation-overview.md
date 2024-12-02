@@ -6,11 +6,19 @@ weight: 1000
 description: "Overview of the conversation API building block"
 ---
 
-Using the Dapr conversation API you can reduce the complexity of interacting with LLMS and enable critical security and reliability functionality with out-of-the-box features like prompt caching and PII data obfuscation.
+Using the Dapr conversation API, you can reduce the complexity of interacting with Large Language Models (LLMs) and enable critical performance and security functionality with features like prompt caching and personally identifiable information (PII) data obfuscation.
 
 ## Features
 
-### Supported SDKs
+### Prompt caching
+
+todo
+
+### Personally identifiable information (PII) obfuscation
+
+todo
+
+## Supported SDKs
 
 You can use the following SDKs to author a workflow.
 
@@ -20,7 +28,7 @@ You can use the following SDKs to author a workflow.
 | Rust | [converse](https://github.com/dapr/rust-sdk/blob/main/dapr/src/client.rs#L542) |
 | Go | [conversation](https://github.com/dapr/go-sdk/tree/main/client/conversation.go) |
 
-## Try out pub/sub
+## Try out conversation
 
 ### Quickstarts and tutorials
 
@@ -36,5 +44,5 @@ Want to skip the quickstarts? Not a problem. You can try out the conversation bu
 
 ## Next steps
 
-- [How-To: Migrate between large language models]({{< ref howto-conversation-layer.md >}})
+- [How-To: Converse with an LLM using the conversation API]({{< ref howto-conversation-layer.md >}})
 - [Conversation API components]({{< ref supported-conversation >}})

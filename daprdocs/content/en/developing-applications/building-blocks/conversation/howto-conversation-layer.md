@@ -1,9 +1,9 @@
 ---
 type: docs
-title: "How-To: Migrate using the conversation API"
-linkTitle: "How-To: Migrate"
+title: "How-To: Converse with an LLM using the conversation API"
+linkTitle: "How-To: Converse"
 weight: 2000
-description: "Learn how to use the conversation API to migrate between large language model servers and toolkits"
+description: "Learn how to abstract the complexities of interacting with large language models"
 ---
 
 todo

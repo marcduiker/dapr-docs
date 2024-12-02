@@ -6,27 +6,35 @@ description: "Detailed documentation on the conversation API"
 weight: 1400
 ---
 
-Dapr provides users with an abstraction layer to reduce the complexity of interacting with LLMS using either a new runtime method or HTTP endpoint.
+Dapr provides an API to interact with Large Language Models (LLMs) and enables critical performance and security functionality with features like prompt caching and PII data obfuscation.
 
 ## Converse
 
 This endpoint lets you converse with LLMs.
 
 ```
-POST /v1.0/conversation/[component]/converse
+POST /v1.0-alpha1/conversation/<llm-name>/converse
 ```
 
 ### URL parameters
 
 | Parameter | Description |
 | --------- | ----------- |
-| `component` | The name of the component you're using. [See a list of all available Conversation components]({{< ref supported-conversation >}})
+| `llm-name` | The name of the LLM component. [See a list of all available conversation components.]({{< ref supported-conversation >}})
+
+### Request body
+
+| Field | Description |
+| --------- | ----------- |
+| `conversationContext` |  |
+| `inputs` | |
+| `parameters` | | 
+
 
 ### Request content
 
 ```json
 REQUEST = {
-  "conversationContext": "ID of an existing chat room",
   "inputs": ["what is Dapr", "Why use Dapr"],
   "parameters": {},
 }
@@ -44,7 +52,6 @@ Code | Description
 
 ```json
 RESPONSE  = {
-  "conversationContext": "ID of an existing chat room",
   "outputs": {
     {
        "result": "Dapr is distribution application runtime ...",
