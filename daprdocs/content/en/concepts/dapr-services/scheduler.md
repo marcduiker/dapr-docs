@@ -11,6 +11,8 @@ The diagram below shows how the Scheduler service is used via the jobs API when 
 
 <img src="/images/scheduler/scheduler-architecture.png" alt="Diagram showing the Scheduler control plane service and the jobs API">
 
+The Scheduler service is deployed by default, including for [Scheduler actor reminders]({{< ref "jobs-overview.md#actor-reminders" >}}) (actor reminders stored in the Scheduler control plane service as opposed to the Placement control plane service actor reminder system) and workflows.
+
 ## Self-hosted mode
 
 The Scheduler service Docker container is started automatically as part of `dapr init`. It can also be run manually as a process if you are running in [slim-init mode]({{< ref self-hosted-no-docker.md >}}).
