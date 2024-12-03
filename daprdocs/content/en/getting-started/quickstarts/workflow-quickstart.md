@@ -514,7 +514,7 @@ For this example, you will need:
 <!-- IGNORE_LINKS -->
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 <!-- END_IGNORE -->
-- [.NET 6](https://dotnet.microsoft.com/download), [.NET 8](https://dotnet.microsoft.com/download) or [.NET 9](https://dotnet.microsoft.com/download) installed
+- [.NET 7](https://dotnet.microsoft.com/download), [.NET 8](https://dotnet.microsoft.com/download) or [.NET 9](https://dotnet.microsoft.com/download) installed
 
 {{% alert title="Note" color="primary" %}}
 
