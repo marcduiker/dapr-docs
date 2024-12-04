@@ -18,7 +18,7 @@ You can configure authentication using the AWS SDK’s default provider chain or
 
 ### Authentication Profiles
 
-#### 1. Access Key ID and Secret Access Key
+#### Access Key ID and Secret Access Key
 Use static Access Key and Secret Key credentials, either through component metadata fields or via [default AWS configuration](https://docs.aws.amazon.com/sdkref/latest/guide/creds-config-files.html). 
 
 {{% alert title="Important" color="warning" %}}
@@ -34,7 +34,7 @@ Prefer loading credentials via the default AWS configuration in scenarios such a
 | `secretKey` | N | AWS Secret access key, used alongside `accessKey`. | "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" |
 | `sessionToken` | N | AWS Session token, used with `accessKey` and `secretKey`. Often unnecessary for IAM user keys. | |
 
-#### 2. Assume IAM Role
+#### Assume IAM Role
 This profile allows Dapr to assume a specific IAM Role. Typically used when the Dapr sidecar runs on EKS or nodes/pods linked to IAM policies. Currently supported by Kafka and PostgreSQL components.
 
 | Attribute | Required | Description | Example |
