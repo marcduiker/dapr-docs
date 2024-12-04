@@ -44,8 +44,6 @@ Authentication can be done through setting [environment variables](https://docs.
 
 There are no metadata fields required for this authentication profile.
 
-TODO: note kafka/postgres have useAWSIAM fields!!
-
 ### IAM Roles Anywhere
 [IAM Roles Anywhere](https://aws.amazon.com/iam/roles-anywhere/) is an AWS service that extends IAM role-based authentication to workloads running outside of AWS. It eliminates the need for long-term credentials by using cryptographically signed certificates, anchored in a trust relationship. This leverages the existing PKI, Dapr Sentry control plane service, to sign X.509 certificates and assign a unique [SPIFFE](https://spiffe.io/) identity to each application. To configure this authentication profile:
 1. Create a Trust Anchor in the trusting AWS account by uploading the Dapr certificate bundle as an `External certificate bundle`.
