@@ -8,9 +8,13 @@ aliases:
   - /developing-applications/integrations/authenticating/authenticating-aws/
 ---
 
-Dapr components leveraging AWS services (e.g., DynamoDB, SQS, S3) utilize standardized configuration attributes via the AWS SDK. [Learn more about how the AWS SDK handles credentials](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
+Dapr components leveraging AWS services (for example, DynamoDB, SQS, S3) utilize standardized configuration attributes via the AWS SDK. [Learn more about how the AWS SDK handles credentials](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
 
 You can configure authentication using the AWS SDK’s default provider chain or one of the predefined AWS authentication profiles outlined below. Verify your component configuration by testing and inspecting Dapr runtime logs to confirm proper initialization.
+
+### Terminology
+- **ARN (Amazon Resource Name):** A unique identifier used to specify AWS resources. Format: arn:partition:service:region:account-id:resource. Example: arn:aws:iam::123456789012:role/example-role.
+- **IAM (Identity and Access Management):** AWS's service for managing access to AWS resources securely.
 
 ### Authentication Profiles
 
