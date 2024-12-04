@@ -8,50 +8,49 @@ aliases:
   - /developing-applications/integrations/authenticating/authenticating-aws/
 ---
 
-All Dapr components using various AWS services (DynamoDB, SQS, S3, etc) use a standardized set of attributes for configuration via the AWS SDK. [Learn more about how the AWS SDK handles credentials](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
+Dapr components leveraging AWS services (e.g., DynamoDB, SQS, S3) utilize standardized configuration attributes via the AWS SDK. [Learn more about how the AWS SDK handles credentials](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
 
-You can configure the AWS SDK using the default provider chain, or using one of the following built-in AWS authentication profiles. Test the component configuration and inspect the log output from the Dapr runtime to ensure that components initialize correctly.
+You can configure authentication using the AWS SDK’s default provider chain or one of the predefined AWS authentication profiles outlined below. Verify your component configuration by testing and inspecting Dapr runtime logs to confirm proper initialization.
 
-### AWS: Access Key ID and Secret Access Key
-Authenticate to AWS using static Access Key and Secret Key information. You can do this through metadata fields on the component, or by using the [default AWS configuration](https://docs.aws.amazon.com/sdkref/latest/guide/creds-config-files.html) for this authentication profile. 
+### Authentication Profiles
+
+#### 1. Access Key ID and Secret Access Key
+Use static Access Key and Secret Key credentials, either through component metadata fields or via [default AWS configuration](https://docs.aws.amazon.com/sdkref/latest/guide/creds-config-files.html). 
 
 {{% alert title="Important" color="warning" %}}
-You should leverage the loading of the default AWS configuration instead of providing AWS access key, secret key, and tokens in the definition of the component spec you're using:
-- When running the Dapr sidecar (`daprd`) with your application on EKS (AWS Kubernetes)
-- If using a node/pod that has already been attached to an IAM policy defining access to AWS resources 
+Prefer loading credentials via the default AWS configuration in scenarios such as:
+- Running the Dapr sidecar (`daprd`) with your application on EKS (AWS Kubernetes).
+- Using nodes or pods attached to IAM policies that define AWS resource access.
 {{% /alert %}}
 
 | Attribute | Required | Description | Example |
 | --------- | ----------- | ----------- | ----------- |
-| `region` | Y | Which AWS region to connect to. | "us-east-1" |
+| `region` | Y | AWS region to connect to. | "us-east-1" |
 | `accessKey` | N | AWS Access key id. | "AKIAIOSFODNN7EXAMPLE" |
-| `secretKey` | N | AWS Secret access key. Use together with `accessKey` to explicitly specify credentials. | "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" |
-| `sessionToken` | N | AWS Session token. Used together with `accessKey` and `secretKey`. When using a regular IAM user's access key and secret, a session token is normally not required. | |
+| `secretKey` | N | AWS Secret access key, used alongside `accessKey`. | "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" |
+| `sessionToken` | N | AWS Session token, used with `accessKey` and `secretKey`. Often unnecessary for IAM user keys. | |
 
-### Assume IAM Role
-Assume a specific IAM Role. This authentication profile assumes your running the Dapr sidecar on EKS (AWS Kubernetes), or using a node/pod that has already been attached to an IAM policy defining access to AWS resources.
-
-This authentication profile is only supported on Kafka and PostgreSQL components at this time.
+#### 2. Assume IAM Role
+This profile allows Dapr to assume a specific IAM Role. Typically used when the Dapr sidecar runs on EKS or nodes/pods linked to IAM policies. Currently supported by Kafka and PostgreSQL components.
 
 | Attribute | Required | Description | Example |
 | --------- | ----------- | ----------- | ----------- |
-| `region` | Y | Which AWS region to connect to. | "us-east-1" |
-| `assumeRoleArn` | N | IAM role that has access to AWS resource. This field will be marked required in Dapr 1.17. | "arn:aws:iam::123456789:role/mskRole" |
-| `sessionName` | N | The session name for assuming a role. Default is `"DaprDefaultSession"`. | "MyAppSession" |
+| `region` | Y | AWS region to connect to. | "us-east-1" |
+| `assumeRoleArn` | N | ARN of the IAM role with AWS resource access. Will be required in Dapr 1.17. | "arn:aws:iam::123456789:role/mskRole" |
+| `sessionName` | N | Session name for role assumption. Default is `"DaprDefaultSession"`. | "MyAppSession" |
 
-### Credentials from Environment Variables
-Authentication can be done through setting [environment variables](https://docs.aws.amazon.com/sdkref/latest/guide/environment-variables.html) providing credentials. This supports situations, such as when running Dapr in self-hosted mode where the Dapr sidecar injector doesn't allow for configuring environment variables on the Dapr sidecar. 
+#### Credentials from Environment Variables
+Authenticate using [environment variables](https://docs.aws.amazon.com/sdkref/latest/guide/environment-variables.html). This is especially useful for Dapr in self-hosted mode where sidecar injectors don’t configure environment variables.
 
 There are no metadata fields required for this authentication profile.
 
-### IAM Roles Anywhere
-[IAM Roles Anywhere](https://aws.amazon.com/iam/roles-anywhere/) is an AWS service that extends IAM role-based authentication to workloads running outside of AWS. It eliminates the need for long-term credentials by using cryptographically signed certificates, anchored in a trust relationship. This leverages the existing PKI, Dapr Sentry control plane service, to sign X.509 certificates and assign a unique [SPIFFE](https://spiffe.io/) identity to each application. To configure this authentication profile:
-1. Create a Trust Anchor in the trusting AWS account by uploading the Dapr certificate bundle as an `External certificate bundle`.
-2. Create an IAM role with the resource permissions policy necessary, as well as a trust entity for the Roles Anywhere AWS service. Here, you can specify SPIFFE identities allowed.
+#### IAM Roles Anywhere
+[IAM Roles Anywhere](https://aws.amazon.com/iam/roles-anywhere/) extends IAM role-based authentication to external workloads. It eliminates the need for long-term credentials by using cryptographically signed certificates, anchored in a trust relationship using Dapr PKI. Dapr SPIFFE identity X.509 certificates are used to authenticate to AWS services, and Dapr handles credential rotation at half the session lifespan.
+
+To configure this authentication profile:
+1. Create a Trust Anchor in the trusting AWS account using the Dapr certificate bundle as an `External certificate bundle`.
+2. Create an IAM role with the resource permissions policy necessary, as well as a trust entity for the Roles Anywhere AWS service. Here, you specify SPIFFE identities allowed.
 3. Create an IAM Profile under the Roles Anywhere service, linking the IAM Role.
-
-This is the most secure AWS authentication profile as Dapr handles credential rotation at half the session lifespan.
-
 
 | Attribute | Required | Description | Example |
 | --------- | ----------- | ----------- | ----------- |
@@ -59,15 +58,15 @@ This is the most secure AWS authentication profile as Dapr handles credential ro
 | `trustProfileArn` | Y | ARN of the AWS IAM Profile in the trusting AWS account. | arn:aws:rolesanywhere:us-west-1:012345678910:profile/01234568-0123-0123-0123-012345678901 |
 | `assumeRoleArn` | Y | ARN of the AWS IAM role to assume in the trusting AWS account. | arn:aws:iam:012345678910:role/exampleIAMRoleName |
 
-### Additional Optional Fields
+### Additional Fields
 
 Some AWS components include additional optional fields:
 
-| Attribute | Description |
-| --------- | ----------- |
-| `endpoint` | N | The endpoint is normally handled internally by the AWS SDK. However, in some situations it might make sense to set it locally - for example if developing against [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html). |
+| Attribute | Required | Description | Example |
+| --------- | ----------- | ----------- | ----------- |
+| `endpoint` | N | The endpoint is normally handled internally by the AWS SDK. However, in some situations it might make sense to set it locally - for example if developing against [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html). | |
 
-Furthermore, non-native AWS components such as Kafka and PostgreSQL that support AWS authentication profiles have metadata fields to trigger the AWS authentication logic. Be sure to check your specific component documentation.
+Furthermore, non-native AWS components such as Kafka and PostgreSQL that support AWS authentication profiles have metadata fields to trigger the AWS authentication logic. Be sure to check specific component documentation.
 
 ## Alternatives to explicitly specifying credentials in component manifest files
 
