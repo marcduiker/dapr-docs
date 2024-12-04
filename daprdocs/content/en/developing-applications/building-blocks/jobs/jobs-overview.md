@@ -61,7 +61,9 @@ The Scheduler service enables the scheduling of jobs to scale across multiple re
 
 ### Actor reminders
 
-Actors have actor reminders, but present some limitations involving scalability using the Placement service implementation. You can make reminders more scalable by using `SchedulerReminders` in the configuration for your actor application. `SchedulerReminders` defaults to `true`. To disable Scheduler actor reminders, change it to `false`. 
+Actors have actor reminders, but present some limitations involving scalability using the Placement service implementation. You can make reminders more scalable by using `SchedulerReminders` in the configuration for your actor application. 
+
+The `SchedulerReminders` preview feature flag defaults to `true`. To disable Scheduler actor reminders, you can manually set it to `false`. 
 
 ## Try out the jobs API
 
