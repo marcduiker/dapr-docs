@@ -6,10 +6,6 @@ weight: 1000
 description: "Overview of Dapr Workflow"
 ---
 
-{{% alert title="Note" color="primary" %}}
-Dapr Workflow is currently in beta. [See known limitations]({{< ref "#limitations" >}}).
-{{% /alert %}}
-
 Dapr workflow makes it easy for developers to write business logic and integrations in a reliable way. Since Dapr workflows are stateful, they support long-running and fault-tolerant applications, ideal for orchestrating microservices. Dapr workflow works seamlessly with other Dapr building blocks, such as service invocation, pub/sub, state management, and bindings.
 
 The durable, resilient Dapr Workflow capability:
