@@ -109,7 +109,7 @@ spec:
 | awsSecretKey | N  | The secret key associated with the access key. | `"secretKey"`
 | awsSessionToken | N  | AWS session token to use. A session token is only required if you are using temporary security credentials. | `"sessionToken"`
 | awsIamRoleArn | N  | IAM role that has access to AWS Managed Streaming for Apache Kafka (MSK). This is another option to authenticate with MSK aside from the AWS Credentials. | `"arn:aws:iam::123456789:role/mskRole"`
-| awsStsSessionName | N  | Represents the session name for assuming a role. | `"MSKSASLDefaultSession"`
+| awsStsSessionName | N  | Represents the session name for assuming a role. | `"DaprDefaultSession"`
 | schemaRegistryURL | N | Required when using Schema Registry Avro serialization/deserialization. The Schema Registry URL. | `http://localhost:8081` |
 | schemaRegistryAPIKey | N | When using Schema Registry Avro serialization/deserialization. The Schema Registry credentials API Key. | `XYAXXAZ` |
 | schemaRegistryAPISecret | N | When using Schema Registry Avro serialization/deserialization. The Schema Registry credentials API Secret. | `ABCDEFGMEADFF` |
@@ -354,16 +354,16 @@ spec:
     value: "awsiam"
   - name: awsRegion # Required.
     value: "us-west-1"
-  - name: awsAccessKey # Optional.
+  - name: accessKey # Optional.
     value: <AWS_ACCESS_KEY>
-  - name: awsSecretKey # Optional.
+  - name: secretKey # Optional.
     value: <AWS_SECRET_KEY>
-  - name: awsSessionToken # Optional.
+  - name: sessionToken # Optional.
     value: <AWS_SESSION_KEY>
-  - name: awsIamRoleArn # Optional.
+  - name: assumeRoleArn # Optional.
     value: "arn:aws:iam::123456789:role/mskRole"
-  - name: awsStsSessionName # Optional.
-    value: "MSKSASLDefaultSession"
+  - name: sessionName # Optional.
+    value: "DaprDefaultSession"
 ```
 
 ### Communication using TLS
