@@ -6,6 +6,10 @@ description: "Detailed documentation on the conversation API"
 weight: 1400
 ---
 
+{{% alert title="Alpha" color="primary" %}}
+The conversation API is currently in [alpha]({{< ref "certification-lifecycle.md#certification-levels" >}}).
+{{% /alert %}}
+
 Dapr provides an API to interact with Large Language Models (LLMs) and enables critical performance and security functionality with features like prompt caching and PII data obfuscation.
 
 ## Converse

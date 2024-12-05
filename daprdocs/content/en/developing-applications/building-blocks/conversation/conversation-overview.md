@@ -6,6 +6,11 @@ weight: 1000
 description: "Overview of the conversation API building block"
 ---
 
+{{% alert title="Alpha" color="primary" %}}
+The conversation API is currently in [alpha]({{< ref "certification-lifecycle.md#certification-levels" >}}).
+{{% /alert %}}
+
+
 Using the Dapr conversation API, you can reduce the complexity of interacting with Large Language Models (LLMs) and enable critical performance and security functionality with features like prompt caching and personally identifiable information (PII) data obfuscation.
 
 ## Features
