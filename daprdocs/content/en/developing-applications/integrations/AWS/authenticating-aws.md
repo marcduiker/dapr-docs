@@ -13,7 +13,7 @@ Dapr components leveraging AWS services (for example, DynamoDB, SQS, S3) utilize
 You can configure authentication using the AWS SDK’s default provider chain or one of the predefined AWS authentication profiles outlined below. Verify your component configuration by testing and inspecting Dapr runtime logs to confirm proper initialization.
 
 ### Terminology
-- **ARN (Amazon Resource Name):** A unique identifier used to specify AWS resources. Format: arn:partition:service:region:account-id:resource. Example: arn:aws:iam::123456789012:role/example-role.
+- **ARN (Amazon Resource Name):** A unique identifier used to specify AWS resources. Format: `arn:partition:service:region:account-id:resource`. Example: `arn:aws:iam::123456789012:role/example-role`.
 - **IAM (Identity and Access Management):** AWS's service for managing access to AWS resources securely.
 
 ### Authentication Profiles
@@ -30,8 +30,8 @@ Prefer loading credentials via the default AWS configuration in scenarios such a
 | Attribute | Required | Description | Example |
 | --------- | ----------- | ----------- | ----------- |
 | `region` | Y | AWS region to connect to. | "us-east-1" |
-| `accessKey` | N | AWS Access key id. | "AKIAIOSFODNN7EXAMPLE" |
-| `secretKey` | N | AWS Secret access key, used alongside `accessKey`. | "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" |
+| `accessKey` | N | AWS Access key id. Will be required in Dapr 1.17. | "AKIAIOSFODNN7EXAMPLE" |
+| `secretKey` | N | AWS Secret access key, used alongside `accessKey`. Will be required in Dapr 1.17. | "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" |
 | `sessionToken` | N | AWS Session token, used with `accessKey` and `secretKey`. Often unnecessary for IAM user keys. | |
 
 #### Assume IAM Role
