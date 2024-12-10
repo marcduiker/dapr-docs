@@ -30,8 +30,8 @@ Prefer loading credentials via the default AWS configuration in scenarios such a
 | Attribute | Required | Description | Example |
 | --------- | ----------- | ----------- | ----------- |
 | `region` | Y | AWS region to connect to. | "us-east-1" |
-| `accessKey` | N | AWS Access key id. Will be required in Dapr 1.17. | "AKIAIOSFODNN7EXAMPLE" |
-| `secretKey` | N | AWS Secret access key, used alongside `accessKey`. Will be required in Dapr 1.17. | "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" |
+| `accessKey` | N | AWS Access key id. Will be required in Dapr v1.17. | "AKIAIOSFODNN7EXAMPLE" |
+| `secretKey` | N | AWS Secret access key, used alongside `accessKey`. Will be required in Dapr v1.17. | "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" |
 | `sessionToken` | N | AWS Session token, used with `accessKey` and `secretKey`. Often unnecessary for IAM user keys. | |
 
 #### Assume IAM Role
@@ -40,7 +40,7 @@ This profile allows Dapr to assume a specific IAM Role. Typically used when the 
 | Attribute | Required | Description | Example |
 | --------- | ----------- | ----------- | ----------- |
 | `region` | Y | AWS region to connect to. | "us-east-1" |
-| `assumeRoleArn` | N | ARN of the IAM role with AWS resource access. Will be required in Dapr 1.17. | "arn:aws:iam::123456789:role/mskRole" |
+| `assumeRoleArn` | N | ARN of the IAM role with AWS resource access. Will be required in Dapr v1.17. | "arn:aws:iam::123456789:role/mskRole" |
 | `sessionName` | N | Session name for role assumption. Default is `"DaprDefaultSession"`. | "MyAppSession" |
 
 #### Credentials from Environment Variables
