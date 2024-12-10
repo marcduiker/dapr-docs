@@ -11,7 +11,7 @@ The diagram below shows how the Scheduler service is used via the jobs API when 
 
 <img src="/images/scheduler/scheduler-architecture.png" alt="Diagram showing the Scheduler control plane service and the jobs API">
 
-The Scheduler service is deployed by default, including for [Scheduler actor reminders]({{< ref "jobs-overview.md#actor-reminders" >}}) (actor reminders stored in the Scheduler control plane service as opposed to the Placement control plane service actor reminder system) and workflows.
+The Scheduler service is used by default for [actor scheduler reminders]({{< ref "jobs-overview.md#actor-reminders" >}}) where actor reminders, which are also used by workflows, are stored in the Scheduler service as opposed to the Placement service.
 
 ## Self-hosted mode
 
