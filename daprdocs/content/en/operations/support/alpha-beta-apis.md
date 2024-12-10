@@ -21,9 +21,7 @@ description: "List of current alpha and beta APIs"
 
 ## Beta APIs
 
-| Building block/API | gRPC | HTTP | Description | Documentation | Version introduced | 
-| ------------------ | ---- | ---- | ----------- | ------------- | ------------------ |
-| Workflow    |  [Workflow proto](https://github.com/dapr/dapr/blob/5aba3c9aa4ea9b3f388df125f9c66495b43c5c9e/dapr/proto/runtime/v1/dapr.proto#L151)    | `/v1.0-beta1/workflow` | The workflow API enables you to define long running, persistent processes or data flows.	 | [Workflow API]({{< ref "workflow-overview.md" >}}) | v1.10 |
+No current beta APIs.
 
 ## Related links
 
