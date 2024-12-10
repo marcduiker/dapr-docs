@@ -6,10 +6,6 @@ description: "Detailed documentation on the workflow API"
 weight: 300
 ---
 
-{{% alert title="Note" color="primary" %}}
-Dapr Workflow is currently in beta. [See known limitations for {{% dapr-latest-version cli="true" %}}]({{< ref "workflow-overview.md#limitations" >}}).
-{{% /alert %}}
-
 Dapr provides users with the ability to interact with workflows and comes with a built-in `dapr` component.
 
 ## Start workflow request

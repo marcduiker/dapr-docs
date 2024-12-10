@@ -7,10 +7,6 @@ description: Get started with the Dapr Workflow building block
 ---
 
 {{% alert title="Note" color="primary" %}}
-Dapr Workflow is currently in beta. [See known limitations for {{% dapr-latest-version cli="true" %}}]({{< ref "workflow-overview.md#limitations" >}}).
-{{% /alert %}}
-
-{{% alert title="Note" color="primary" %}}
 Redis is currently used as the state store component for Workflows in the Quickstarts. However, Redis does not support transaction rollbacks and should not be used in production as an actor state store.
 {{% /alert %}}
 
