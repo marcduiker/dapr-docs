@@ -95,6 +95,16 @@ For a new Dapr deployment, HA mode can be set with both:
 
 For an existing Dapr deployment, [you can enable HA mode in a few extra steps]({{< ref "#enabling-high-availability-in-an-existing-dapr-deployment" >}}).
 
+### Scheduler service HA configuration
+
+As of Dapr 1.15, the scheduler `dapr_scheduler.ha` flag scales schedulers to three instances independently of the `global.ha.enabled` flag. Default is one instance, meaning HA for schedulers is not default.
+
+`global.ha.enabled` set to `true` is fully respected and cannot be overridden by setting the local HA flag to `false`.
+
+To scale the schedulers to three instancers, set `global.ha.enabled` to false and `dapr_scheduler.ha` to true. 
+
+This flag can be set via Helm with `--set dapr_scheduler.ha=true`.
+
 ## Setting cluster critical priority class name for control plane services
 
 In some scenarios, nodes may have memory and/or cpu pressure and the Dapr control plane pods might get selected

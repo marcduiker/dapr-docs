@@ -19,7 +19,9 @@ The Scheduler service Docker container is started automatically as part of `dapr
 
 ## Kubernetes mode
 
-The Scheduler service is deployed as part of `dapr init -k`, or via the Dapr Helm charts. For more information on running Dapr on Kubernetes, visit the [Kubernetes hosting page]({{< ref kubernetes >}}).
+The Scheduler service is deployed as part of `dapr init -k`, or via the Dapr Helm charts. You can run Scheduler in high availability (HA) mode. [Learn more about setting HA mode in your Kubernetes service.]({{< ref "kubernetes-production.md#high-availability-mode" >}})
+
+For more information on running Dapr on Kubernetes, visit the [Kubernetes hosting page]({{< ref kubernetes >}}).
 
 ## Related links
 
