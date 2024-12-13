@@ -17,7 +17,7 @@ For http calls made to Dapr runtime, when an error is encountered, an error json
 
 The following tables list the error codes returned by Dapr runtime:
 
-### Actors (Building Block)
+### Actors API
 
 | Error Code                       | Description                                |
 | -------------------------------- | ------------------------------------------ |
@@ -34,7 +34,7 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_ACTOR_STATE_TRANSACTION_SAVE | Error storing actor state transactionally. |
 | ERR_ACTOR_REMINDER_NON_HOSTED    | Error setting reminder for an actor.       |
 
-### Workflows (Building Block)
+### Workflows API
 
 | Error Code                       | Description                                                 |
 | -------------------------------- | ----------------------------------------------------------- |
@@ -54,7 +54,7 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_INSTANCE_ID_PROVIDED_MISSING | Error workflow instance ID was provided but missing.        |
 | ERR_INSTANCE_ID_TOO_LONG         | Error workflow instance ID exceeds allowable length.        |
 
-### State Management (Building Block)
+### State Management API
 
 | Error Code                            | Description                                                               |
 | ------------------------------------- | ------------------------------------------------------------------------- |
@@ -71,7 +71,7 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_STATE_STORE_NOT_SUPPORTED         | Error state store is not supported.                                       |
 | ERR_STATE_STORE_TOO_MANY_TRANSACTIONS | Error exceeded maximum allowable transactions.                            |
 
-### Configuration (Building Block)
+### Configuration API
 
 | Error Code                             | Description                                  |
 | -------------------------------------- | -------------------------------------------- |
@@ -81,7 +81,7 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_CONFIGURATION_SUBSCRIBE            | Error subscribing to a configuration.        |
 | ERR_CONFIGURATION_UNSUBSCRIBE          | Error unsubscribing from a configuration.    |
 
-### Crypto (Building Block)
+### Crypto API
 
 | Error Code                          | Description                                |
 | ----------------------------------- | ------------------------------------------ |
@@ -90,7 +90,7 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_CRYPTO_PROVIDER_NOT_FOUND       | Error specified crypto provider not found. |
 | ERR_CRYPTO_PROVIDERS_NOT_CONFIGURED | Error no crypto providers configured.      |
 
-### Secrets (Building Block)
+### Secrets API
 
 | Error Code                       | Description                                          |
 | -------------------------------- | ---------------------------------------------------- |
@@ -99,7 +99,7 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_SECRET_GET                   | Error retrieving the specified secret.               |
 | ERR_PERMISSION_DENIED            | Error access denied due to insufficient permissions. |
 
-### Pub/Sub (Building Block)
+### Pub/Sub API
 
 | Error Code                  | Description                                              |
 | --------------------------- | -------------------------------------------------------- |
@@ -114,7 +114,7 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_PUBLISH_OUTBOX          | Error publishing message to the outbox.                  |
 | ERR_TOPIC_NAME_EMPTY        | Error topic name for Pub/Sub message is empty.           |
 
-### Conversation (Building Block)
+### Conversation API
 
 | Error Code                      | Description                                     |
 | ------------------------------- | ----------------------------------------------- |
@@ -125,7 +125,7 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_CONVERSATION_MISSING_INPUTS | Error missing required inputs for conversation. |
 | ERR_CONVERSATION_NOT_FOUND      | Error conversation not found.                   |
 
-### Distributed Lock (Building Block)
+### Distributed Lock API
 
 | Error Code                    | Description                         |
 | ----------------------------- | ----------------------------------- |
