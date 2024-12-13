@@ -96,7 +96,7 @@ spec:
         policy: constant
         duration: 5s
         maxRetries: 3
-        matches:
+        matching:
           httpStatusCodes: "429,500-599" # retry the HTTP status codes in this range. All others are not retried. 
           gRPCStatusCodes: "1-4,8-11,13,14" # retry gRPC status codes in these ranges and separate single codes.
 ```
