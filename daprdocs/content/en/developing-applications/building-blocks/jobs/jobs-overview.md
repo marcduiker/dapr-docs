@@ -59,14 +59,6 @@ The jobs API provides several features to make it easy for you to schedule jobs.
 
 The Scheduler service enables the scheduling of jobs to scale across multiple replicas, while guaranteeing that a job is only triggered by 1 scheduler service instance.
 
-### Actor reminders
-
-Actors have reminders; the Scheduler service is used by default for actor reminders (which are also used by workflows) to make them more scalable. 
-
-> **Note:** In earlier releases, the Placement service was used for actor reminders. This is no longer recommended. 
-
-The `SchedulerReminders` preview feature defaults to `true`. To disable actor scheduler reminders, you can set it to `false`.
-
 ## Try out the jobs API
 
 You can try out the jobs API in your application. After [Dapr is installed]({{< ref install-dapr-cli.md >}}), you can begin using the jobs API, starting with [the How-to: Schedule jobs guide]({{< ref howto-schedule-and-handle-triggered-jobs.md >}}).

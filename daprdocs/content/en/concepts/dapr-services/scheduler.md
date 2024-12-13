@@ -11,7 +11,11 @@ The diagram below shows how the Scheduler service is used via the jobs API when 
 
 <img src="/images/scheduler/scheduler-architecture.png" alt="Diagram showing the Scheduler control plane service and the jobs API">
 
-The Scheduler service is used by default for [actor scheduler reminders]({{< ref "jobs-overview.md#actor-reminders" >}}) where actor reminders, which are also used by workflows, are stored in the Scheduler service as opposed to the Placement service.
+## Actor reminders
+
+Prior to Dapr v1.15, [actor reminders]({{< ref "actors-timers-reminders.md#actor-reminders" >}}) were run using the Placement service. Now, by default, the [`SchedulerReminders` feature flag]({{< ref "support-preview-features.md#current-preview-features" >}}) is set to `true`, and all new actor reminders you create are run using the Scheduler service to make them more scalable.
+
+Once you deploy Dapr v1.15, any _existing_ actor reminders are migrated from the Placement service to the Scheduler service. You can prevent this migration by setting the `SchedulerReminders` flag to `false`.
 
 ## Self-hosted mode
 
@@ -19,7 +23,7 @@ The Scheduler service Docker container is started automatically as part of `dapr
 
 ## Kubernetes mode
 
-The Scheduler service is deployed as part of `dapr init -k`, or via the Dapr Helm charts. You can run Scheduler in high availability (HA) mode. [Learn more about setting HA mode in your Kubernetes service.]({{< ref "kubernetes-production.md#high-availability-mode" >}})
+The Scheduler service is deployed as part of `dapr init -k`, or via the Dapr Helm charts. You can run Scheduler in high availability (HA) mode. [Learn more about setting HA mode in your Kubernetes service.]({{< ref "kubernetes-production.md#individual-service-ha-helm-configuration" >}})
 
 For more information on running Dapr on Kubernetes, visit the [Kubernetes hosting page]({{< ref kubernetes >}}).
 
