@@ -122,10 +122,17 @@ Lock components are used as a distributed lock to provide mutually exclusive acc
 
 ### Cryptography
 
-[Cryptography]({{< ref cryptography-overview.md >}}) components are used to perform crypographic operations, including encrypting and decrypting messages, without exposing keys to your application.
+[Cryptography]({{< ref cryptography-overview.md >}}) components are used to perform cryptographic operations, including encrypting and decrypting messages, without exposing keys to your application.
 
 - [List of supported cryptography components]({{< ref supported-cryptography >}})
 - [Cryptography implementations](https://github.com/dapr/components-contrib/tree/master/crypto) 
+
+### Conversation
+
+Dapr provides developers a way to abstract interactions with large language models (LLMs) with built-in security and reliability features. Use [conversation]({{< ref conversation-overview.md >}}) components to send prompts to different LLMs, along with the conversation context.
+
+- [List of supported conversation components]({{< ref supported-conversation >}})
+- [Conversation implementations](https://github.com/dapr/components-contrib/tree/main/conversation)
 
 ### Middleware
 
