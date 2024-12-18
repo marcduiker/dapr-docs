@@ -32,6 +32,9 @@ spec:
         duration: <REPLACE-WITH-VALUE>
         maxInterval: <REPLACE-WITH-VALUE>
         maxRetries: <REPLACE-WITH-VALUE>
+        matching:
+          httpStatusCodes: <REPLACE-WITH-VALUE>
+          gRPCStatusCodes: <REPLACE-WITH-VALUE>
     circuitBreakers:
       circuitBreakerName: # Replace with any unique name
         maxRequests: <REPLACE-WITH-VALUE>
