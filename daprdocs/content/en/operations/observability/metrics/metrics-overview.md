@@ -70,6 +70,38 @@ spec:
     enabled: false
 ```
 
+## Configuring metrics for error codes
+
+You can enable additional metrics for [Dapr API error codes](https://docs.dapr.io/reference/api/error_codes/) by setting `spec.metrics.recordErrorCodes` to `true`. Dapr APIs which communicate back to their caller may return standardized error codes. As described in the [Dapr development docs](https://github.com/dapr/dapr/blob/master/docs/development/dapr-metrics.md), a new metric called `error_code_total` is recorded, which allows monitoring of error codes triggered by application, code, and category. See [the `errorcodes` package](https://github.com/dapr/dapr/blob/master/pkg/messages/errorcodes/errorcodes.go) for specific codes and categories.
+
+Example configuration:
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: tracing
+  namespace: default
+spec:
+  metrics:
+    enabled: true
+    recordErrorCodes: true
+```
+
+Example metric:
+```json
+{
+  "app_id": "publisher-app",
+  "category": "state",
+  "dapr_io_enabled": "true",
+  "error_code": "ERR_STATE_STORE_NOT_CONFIGURED",
+  "instance": "10.244.1.64:9090",
+  "job": "kubernetes-service-endpoints",
+  "namespace": "my-app",
+  "node": "my-node",
+  "service": "publisher-app-dapr"
+}
+```
+
 ## Optimizing HTTP metrics reporting with path matching
 
 When invoking Dapr using HTTP, metrics are created for each requested method by default. This can result in a high number of metrics, known as high cardinality, which can impact memory usage and CPU.
