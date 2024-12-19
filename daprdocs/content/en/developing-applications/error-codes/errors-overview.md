@@ -9,7 +9,7 @@ description: "Overview of Dapr errors"
 An error code is a numeric or alphamueric code that indicates the nature of an error and, when possible, why it occured. 
 
 Dapr error codes are standardized strings for over 80+ common errors across HTTP and gRPC requests when using the Dapr APIs. These codes are both:
-- Returned in the JSON response body of the request
+- Returned in the JSON response body of the request.
 - When enabled, logged in debug-level logs in the runtime.
   - If you're running in Kubernetes, error codes are logged in the sidecar.
   - If you're running in self-hosted, you can enable and run debug logs.
