@@ -49,7 +49,7 @@ The returned error includes:
 
 ## Dapr error code metrics
 
-Metrics help users see when exactly errors are occuring from within the runtime. Error code metrics are collected using the `error_code_total` endpoint. This endpoint is disabled by default. You can [enable it using the `recordErrorCodes` field in your configuration file]({{< ref "metrics-overview.md#configuring-metrics-for-error-codes" >}}). 
+Metrics help you see when exactly errors are occuring from within the runtime. Error code metrics are collected using the `error_code_total` endpoint. This endpoint is disabled by default. You can [enable it using the `recordErrorCodes` field in your configuration file]({{< ref "metrics-overview.md#configuring-metrics-for-error-codes" >}}). 
 
 ## Demo
 
