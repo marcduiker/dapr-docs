@@ -2,7 +2,7 @@
 type: docs
 title: "Dapr Software Development Kits (SDKs)"
 linkTitle: "SDKs"
-weight: 20
+weight: 30
 description: "Use your favorite languages with Dapr"
 no_list: true
 ---
