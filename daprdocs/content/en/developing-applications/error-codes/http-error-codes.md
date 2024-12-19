@@ -6,7 +6,7 @@ description: "Detailed reference of the Dapr HTTP error codes and how to handle 
 weight: 30
 ---
 
-For http calls made to Dapr runtime, when an error is encountered, an error json is returned in http response body. The json contains an error code and an descriptive error message, e.g.
+For HTTP calls made to Dapr runtime, when an error is encountered, an error JSON is returned in response body. The JSON contains an error code and an descriptive error message. 
 
 ```
 {
