@@ -104,12 +104,12 @@ spec:
 | oidcClientSecret | N | The OAuth2 client secret that has been provisioned in the identity provider: Required when `authType` is set to `oidc` | `"KeFg23!"` |
 | oidcScopes | N | Comma-delimited list of OAuth2/OIDC scopes to request with the access token. Recommended when `authType` is set to `oidc`. Defaults to `"openid"` | `"openid,kafka-prod"` |
 | oidcExtensions | N | String containing a JSON-encoded dictionary of OAuth2/OIDC extensions to request with the access token | `{"cluster":"kafka","poolid":"kafkapool"}` |
-| awsRegion | N | The AWS region where the Kafka cluster is deployed to. Required when `authType` is set to `awsiam` | `us-west-1` |
-| awsAccessKey | N  | AWS access key associated with an IAM account. | `"accessKey"`
-| awsSecretKey | N  | The secret key associated with the access key. | `"secretKey"`
-| awsSessionToken | N  | AWS session token to use. A session token is only required if you are using temporary security credentials. | `"sessionToken"`
-| awsIamRoleArn | N  | IAM role that has access to AWS Managed Streaming for Apache Kafka (MSK). This is another option to authenticate with MSK aside from the AWS Credentials. | `"arn:aws:iam::123456789:role/mskRole"`
-| awsStsSessionName | N  | Represents the session name for assuming a role. | `"MSKSASLDefaultSession"`
+| awsRegion | N | This maintains backwards compatibility with existing fields. It will be deprecated as of Dapr 1.17. Use 'region' instead. The AWS region where the Kafka cluster is deployed to. Required when `authType` is set to `awsiam` | `us-west-1` |
+| awsAccessKey | N  |  This maintains backwards compatibility with existing fields. It will be deprecated as of Dapr 1.17. Use 'accessKey' instead. AWS access key associated with an IAM account. | `"accessKey"`
+| awsSecretKey | N  | This maintains backwards compatibility with existing fields. It will be deprecated as of Dapr 1.17. Use 'secretKey' instead. The secret key associated with the access key. | `"secretKey"`
+| awsSessionToken | N  | This maintains backwards compatibility with existing fields. It will be deprecated as of Dapr 1.17. Use 'sessionToken' instead. AWS session token to use. A session token is only required if you are using temporary security credentials. | `"sessionToken"`
+| awsIamRoleArn | N  | This maintains backwards compatibility with existing fields. It will be deprecated as of Dapr 1.17. Use 'assumeRoleArn' instead. IAM role that has access to AWS Managed Streaming for Apache Kafka (MSK). This is another option to authenticate with MSK aside from the AWS Credentials. | `"arn:aws:iam::123456789:role/mskRole"`
+| awsStsSessionName | N  | This maintains backwards compatibility with existing fields. It will be deprecated as of Dapr 1.17. Use 'sessionName' instead. Represents the session name for assuming a role. | `"DaprDefaultSession"`
 | schemaRegistryURL | N | Required when using Schema Registry Avro serialization/deserialization. The Schema Registry URL. | `http://localhost:8081` |
 | schemaRegistryAPIKey | N | When using Schema Registry Avro serialization/deserialization. The Schema Registry credentials API Key. | `XYAXXAZ` |
 | schemaRegistryAPISecret | N | When using Schema Registry Avro serialization/deserialization. The Schema Registry credentials API Secret. | `ABCDEFGMEADFF` |
@@ -332,7 +332,7 @@ spec:
 
 Authenticating with AWS IAM is supported with MSK. Setting `authType` to `awsiam` uses AWS SDK to generate auth tokens to authenticate.
 {{% alert title="Note" color="primary" %}}
-The only required metadata field is `awsRegion`. If no `awsAccessKey` and `awsSecretKey` are provided, you can use AWS IAM roles for service accounts to have password-less authentication to your Kafka cluster.
+The only required metadata field is `region`. If no `acessKey` and `secretKey` are provided, you can use AWS IAM roles for service accounts to have password-less authentication to your Kafka cluster.
 {{% /alert %}}
 
 ```yaml
@@ -352,18 +352,18 @@ spec:
     value: "my-dapr-app-id"
   - name: authType # Required.
     value: "awsiam"
-  - name: awsRegion # Required.
+  - name: region # Required.
     value: "us-west-1"
-  - name: awsAccessKey # Optional.
+  - name: accessKey # Optional.
     value: <AWS_ACCESS_KEY>
-  - name: awsSecretKey # Optional.
+  - name: secretKey # Optional.
     value: <AWS_SECRET_KEY>
-  - name: awsSessionToken # Optional.
+  - name: sessionToken # Optional.
     value: <AWS_SESSION_KEY>
-  - name: awsIamRoleArn # Optional.
+  - name: assumeRoleArn # Optional.
     value: "arn:aws:iam::123456789:role/mskRole"
-  - name: awsStsSessionName # Optional.
-    value: "MSKSASLDefaultSession"
+  - name: sessionName # Optional.
+    value: "DaprDefaultSession"
 ```
 
 ### Communication using TLS
@@ -468,7 +468,7 @@ Apache Kafka supports the following bulk metadata options:
 
 When invoking the Kafka pub/sub, its possible to provide an optional partition key by using the `metadata` query param in the request url.
 
-The param name is `partitionKey`.
+The param name can either be `partitionKey` or `__key` 
 
 Example:
 
@@ -484,7 +484,7 @@ curl -X POST http://localhost:3500/v1.0/publish/myKafka/myTopic?metadata.partiti
 
 ### Message headers
 
-All other metadata key/value pairs (that are not `partitionKey`) are set as headers in the Kafka message. Here is an example setting a `correlationId` for the message.
+All other metadata key/value pairs (that are not `partitionKey` or `__key`) are set as headers in the Kafka message. Here is an example setting a `correlationId` for the message.
 
 ```shell
 curl -X POST http://localhost:3500/v1.0/publish/myKafka/myTopic?metadata.correlationId=myCorrelationID&metadata.partitionKey=key1 \
@@ -495,6 +495,52 @@ curl -X POST http://localhost:3500/v1.0/publish/myKafka/myTopic?metadata.correla
         }
       }'
 ```
+### Kafka Pubsub special message headers received on consumer side
+
+When consuming messages, special message metadata are being automatically passed as headers. These are:
+- `__key`: the message key if available
+- `__topic`: the topic for the message
+- `__partition`: the partition number for the message
+- `__offset`: the offset of the message in the partition
+- `__timestamp`: the timestamp for the message
+
+You can access them within the consumer endpoint as follows:
+{{< tabs "Python (FastAPI)" >}}
+
+{{% codetab %}}
+
+```python
+from fastapi import APIRouter, Body, Response, status
+import json
+import sys
+
+app = FastAPI()
+
+router = APIRouter()
+
+
+@router.get('/dapr/subscribe')
+def subscribe():
+    subscriptions = [{'pubsubname': 'pubsub',
+                      'topic': 'my-topic',
+                      'route': 'my_topic_subscriber',
+                      }]
+    return subscriptions
+
+@router.post('/my_topic_subscriber')
+def my_topic_subscriber(
+      key: Annotated[str, Header(alias="__key")],
+      offset: Annotated[int, Header(alias="__offset")],
+      event_data=Body()):
+    print(f"key={key} - offset={offset} - data={event_data}", flush=True)
+      return Response(status_code=status.HTTP_200_OK)
+
+app.include_router(router)
+
+```
+
+{{% /codetab %}}
+{{< /tabs >}}
 
 ## Receiving message headers with special characters
 
