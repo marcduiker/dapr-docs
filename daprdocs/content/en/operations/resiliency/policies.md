@@ -110,7 +110,7 @@ Circuit Breaker (CB) policies are used when other applications/services/componen
 | `maxRequests` | The maximum number of requests allowed to pass through when the CB is half-open (recovering from failure). Defaults to `1`. |
 | `interval` | The cyclical period of time used by the CB to clear its internal counts. If set to 0 seconds, this never clears. Defaults to `0s`. |
 | `timeout` | The period of the open state (directly after failure) until the CB switches to half-open. Defaults to `60s`. |
-| `trip` | A [Common Expression Language (CEL)](https://github.com/google/cel-spec) statement that is evaluated by the CB. When the statement evaluates to true, the CB trips and becomes open. Defaults to `consecutiveFailures > 5`. |
+| `trip` | A [Common Expression Language (CEL)](https://github.com/google/cel-spec) statement that is evaluated by the CB. When the statement evaluates to true, the CB trips and becomes open. Defaults to `consecutiveFailures > 5`. Other possible values are `requests` and `totalFailures` where `requests` represents the number of either successful or failed calls before the circuit opens and `totalFailures` represents the total (not necessarily consecutive) number of failed attempts before the circuit opens. Example: `requests > 5` and `totalFailures >3`.|
 
 Example:
 
