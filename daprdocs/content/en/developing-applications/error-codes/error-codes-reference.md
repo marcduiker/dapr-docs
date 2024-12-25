@@ -1,19 +1,10 @@
 ---
 type: docs
-title: "Error codes returned by APIs"
-linkTitle: "Error codes"
-description: "Detailed reference of the Dapr API error codes"
-weight: 1400
+title: "Error codes reference guide"
+linkTitle: "Reference"
+description: "List of gRPC and HTTP error codes in Dapr and their descriptions"
+weight: 20
 ---
-
-For http calls made to Dapr runtime, when an error is encountered, an error json is returned in http response body. The json contains an error code and an descriptive error message, e.g.
-
-```
-{
-    "errorCode": "ERR_STATE_GET",
-    "message": "Requested state key does not exist in state store."
-}
-```
 
 The following tables list the error codes returned by Dapr runtime:
 
@@ -154,3 +145,8 @@ The following tables list the error codes returned by Dapr runtime:
 | ERR_MALFORMED_REQUEST      | Error with a malformed request.                  |
 | ERR_MALFORMED_REQUEST_DATA | Error request data is malformed.                 |
 | ERR_MALFORMED_RESPONSE     | Error response data is malformed.                |
+
+## Next steps
+
+- [Handling HTTP error codes]({{< ref http-error-codes.md >}})
+- [Handling gRPC error codes]({{< ref grpc-error-codes.md >}})
