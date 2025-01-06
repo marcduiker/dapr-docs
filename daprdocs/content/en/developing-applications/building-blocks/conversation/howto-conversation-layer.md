@@ -36,6 +36,7 @@ spec:
 
 ## Connect the conversation client
 
+The following examples use an HTTP client to send a POST request to Dapr's sidecar HTTP endpoint. You can also use [the Dapr SDK client instead]({{< ref "#related-links" >}}).
 
 {{< tabs ".NET" "Go" "Rust" >}}
 
@@ -43,8 +44,30 @@ spec:
  <!-- .NET -->
 {{% codetab %}}
 
-```dotnet
-todo
+```csharp
+using Dapr.AI.Conversation;
+using Dapr.AI.Conversation.Extensions;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDaprConversationClient();
+
+var app = builder.Build();
+
+var conversationClient = app.Services.GetRequiredService<DaprConversationClient>();
+var response = await conversationClient.ConverseAsync("conversation",
+    new List<DaprConversationInput>
+    {
+        new DaprConversationInput(
+            "Please write a witty haiku about the Dapr distributed programming framework at dapr.io",
+            DaprConversationRole.Generic)
+    });
+
+Console.WriteLine("Received the following from the LLM:");
+foreach (var resp in response.Outputs)
+{
+    Console.WriteLine($"\t{resp.Result}");
+}
 ```
 
 {{% /codetab %}}
@@ -181,7 +204,7 @@ dapr run --app-id=conversation --resources-path ./config --dapr-grpc-port 3500 -
 
 ## Related links
 
-Try out the conversation API using the full examples provided in the SDK repos.
+Try out the conversation API using the full examples provided in the supported SDK repos.
 
 
 {{< tabs ".NET" "Go" "Rust" >}}
@@ -189,7 +212,7 @@ Try out the conversation API using the full examples provided in the SDK repos.
  <!-- .NET -->
 {{% codetab %}}
 
-todo
+[Dapr conversation example with the .NET SDK](https://github.com/dapr/dotnet-sdk/tree/master/examples/AI/ConversationalAI)
 
 {{% /codetab %}}
 
