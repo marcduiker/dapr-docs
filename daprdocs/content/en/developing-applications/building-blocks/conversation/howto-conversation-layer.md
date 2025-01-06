@@ -14,6 +14,7 @@ Let's get started using the [conversation API]({{< ref conversation-overview.md 
 
 - Set up one of the available Dapr components (echo) that work with the conversation API.   
 - Add the conversation client to your application.
+- Run the connection using `dapr run`.
 
 ## Set up the conversation component
 
@@ -35,6 +36,7 @@ spec:
 
 ## Connect the conversation client
 
+The following examples use an HTTP client to send a POST request to Dapr's sidecar HTTP endpoint. You can also use [the Dapr SDK client instead]({{< ref "#related-links" >}}).
 
 {{< tabs ".NET" "Go" "Rust" >}}
 
@@ -42,8 +44,30 @@ spec:
  <!-- .NET -->
 {{% codetab %}}
 
-```dotnet
-todo
+```csharp
+using Dapr.AI.Conversation;
+using Dapr.AI.Conversation.Extensions;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDaprConversationClient();
+
+var app = builder.Build();
+
+var conversationClient = app.Services.GetRequiredService<DaprConversationClient>();
+var response = await conversationClient.ConverseAsync("conversation",
+    new List<DaprConversationInput>
+    {
+        new DaprConversationInput(
+            "Please write a witty haiku about the Dapr distributed programming framework at dapr.io",
+            DaprConversationRole.Generic)
+    });
+
+Console.WriteLine("Received the following from the LLM:");
+foreach (var resp in response.Outputs)
+{
+    Console.WriteLine($"\t{resp.Result}");
+}
 ```
 
 {{% /codetab %}}
@@ -125,6 +149,84 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 ```
+
+{{% /codetab %}}
+
+{{< /tabs >}}
+
+## Run the conversation connection
+
+Start the connection using the `dapr run` command. For example, for this scenario, we're running `dapr run` on an application with the app ID `conversation` and pointing to our conversation YAML file in the `./config` directory. 
+
+{{< tabs ".NET" "Go" "Rust" >}}
+
+ <!-- .NET -->
+{{% codetab %}}
+
+```bash
+dapr run --app-id conversation --dapr-grpc-port 50001 --log-level debug --resources-path ./config -- dotnet run
+```
+
+{{% /codetab %}}
+
+ <!-- Go -->
+{{% codetab %}}
+
+```bash
+dapr run --app-id conversation --dapr-grpc-port 50001 --log-level debug --resources-path ./config -- go run ./main.go
+```
+
+**Expected output**
+
+```
+  - '== APP == conversation output: hello world'
+```
+
+{{% /codetab %}}
+
+ <!-- Rust -->
+{{% codetab %}}
+
+```bash
+dapr run --app-id=conversation --resources-path ./config --dapr-grpc-port 3500 -- cargo run --example conversation
+```
+
+**Expected output**
+
+```
+  - 'conversation input: hello world'
+  - 'conversation output: hello world'
+```
+
+{{% /codetab %}}
+
+{{< /tabs >}}
+
+## Related links
+
+Try out the conversation API using the full examples provided in the supported SDK repos.
+
+
+{{< tabs ".NET" "Go" "Rust" >}}
+
+ <!-- .NET -->
+{{% codetab %}}
+
+[Dapr conversation example with the .NET SDK](https://github.com/dapr/dotnet-sdk/tree/master/examples/AI/ConversationalAI)
+
+{{% /codetab %}}
+
+ <!-- Go -->
+{{% codetab %}}
+
+[Dapr conversation example with the Go SDK](https://github.com/dapr/go-sdk/tree/main/examples/conversation)
+
+{{% /codetab %}}
+
+ <!-- Rust -->
+{{% codetab %}}
+
+[Dapr conversation example with the Rust SDK](https://github.com/dapr/rust-sdk/tree/main/examples/src/conversation)
 
 {{% /codetab %}}
 
