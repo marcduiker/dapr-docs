@@ -231,7 +231,7 @@ def main():
         global counter
 
         subscription = client.subscribe(
-            pubsub_name='pubsub', topic='TOPIC_A', dead_letter_topic='TOPIC_A_DEAD'
+            pubsub_name='pubsub', topic='orders', dead_letter_topic='orders_dead'
         )
 
         try:
@@ -291,8 +291,8 @@ def main():
         # This will start a new thread that will listen for messages
         # and process them in the `process_message` function
         close_fn = client.subscribe_with_handler(
-            pubsub_name='pubsub', topic='TOPIC_A', handler_fn=process_message,
-            dead_letter_topic='TOPIC_A_DEAD'
+            pubsub_name='pubsub', topic='orders', handler_fn=process_message,
+            dead_letter_topic='orders_dead'
         )
 
         while counter < 5:
