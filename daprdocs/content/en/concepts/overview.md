@@ -55,6 +55,7 @@ Each of these building block APIs is independent, meaning that you can use any n
 | [**Distributed lock**]({{< ref "distributed-lock-api-overview.md" >}})  | The distributed lock API enables your application to acquire a lock for any resource that gives it exclusive access until either the lock is released by the application, or a lease timeout occurs. 
 | [**Cryptography**]({{< ref "cryptography-overview.md" >}}) | The cryptography API provides an abstraction layer on top of security infrastructure such as key vaults. It contains APIs that allow you to perform cryptographic operations, such as encrypting and decrypting messages, without exposing keys to your applications.
 | [**Jobs**]({{< ref "jobs-overview.md" >}}) | The jobs API enables you to schedule jobs at specific times or intervals.
+| [**Conversation**]({{< ref "conversation-overview.md" >}}) | The conversation API enables you to abstract the complexities of interacting with large language models (LLMs) and includes features such as prompt caching and personally identifiable information (PII) obfuscation. Using [conversation components]({{< ref supported-conversation >}}), you can supply prompts to converse with different LLMs. 
 
 ### Cross-cutting APIs
 
@@ -108,7 +109,7 @@ Deploying and running a Dapr-enabled application into your Kubernetes cluster is
 
 ### Clusters of physical or virtual machines
 
-The Dapr control plane services can be deployed in high availability (HA) mode to clusters of physical or virtual machines in production. In the diagram below, the Actor `Placement` and security `Sentry` services are started on three different VMs to provide HA control plane. In order to provide name resolution using DNS for the applications running in the cluster, Dapr uses [Hashicorp Consul service]({{< ref setup-nr-consul >}}), also running in HA mode.  
+The Dapr control plane services can be deployed in high availability (HA) mode to clusters of physical or virtual machines in production. In the diagram below, the Actor `Placement` and security `Sentry` services are started on three different VMs to provide HA control plane. In order to provide name resolution using DNS for the applications running in the cluster, Dapr uses multicast DNS by default, but can also optionally support [Hashicorp Consul service]({{< ref setup-nr-consul >}}).  
 
 <img src="/images/overview-vms-hosting.png" width=1200 alt="Architecture diagram of Dapr control plane and Consul deployed to VMs in high availability mode">
 

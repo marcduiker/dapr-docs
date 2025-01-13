@@ -95,6 +95,25 @@ For a new Dapr deployment, HA mode can be set with both:
 
 For an existing Dapr deployment, [you can enable HA mode in a few extra steps]({{< ref "#enabling-high-availability-in-an-existing-dapr-deployment" >}}).
 
+### Individual service HA Helm configuration
+
+You can configure HA mode via Helm across all services by setting the `global.ha.enabled` flag to `true`. By default, `--set global.ha.enabled=true` is fully respected and cannot be overridden, making it impossible to simultaneously have either the placement or scheduler service as a single instance. 
+
+> **Note:** HA for scheduler and placement services is not the default setting. 
+
+To scale scheduler and placement to three instances independently of the `global.ha.enabled` flag, set `global.ha.enabled` to `false` and `dapr_scheduler.ha` and `dapr_placement.ha` to `true`. For example:
+
+   ```bash
+   helm upgrade --install dapr dapr/dapr \
+    --version={{% dapr-latest-version short="true" %}} \
+    --namespace dapr-system \
+    --create-namespace \
+    --set global.ha.enabled=false \
+    --set dapr_scheduler.ha=true \
+    --set dapr_placement.ha=true \
+    --wait
+   ```
+
 ## Setting cluster critical priority class name for control plane services
 
 In some scenarios, nodes may have memory and/or cpu pressure and the Dapr control plane pods might get selected
@@ -259,6 +278,22 @@ Verify your production-ready deployment includes the following settings:
 1. The Dapr **control plane is installed on a dedicated namespace**, such as `dapr-system`.
 
 1. Dapr supports and is enabled to **scope components for certain applications**. This is not a required practice. [Learn more about component scopes]({{< ref "component-scopes.md" >}}).
+
+## Recommended Placement service configuration
+
+The [Placement service]({{< ref "placement.md" >}}) is a component in Dapr, responsible for disseminating information about actor addresses to all Dapr sidecars via a placement table (more information on this can be found [here]({{< ref "actors-features-concepts.md#actor-placement-service" >}})). 
+
+When running in production, it's recommended to configure the Placement service with the following values:
+
+1. **High availability**. Ensure the Placement service is highly available (three replicas) and can survive individual node failures. Helm chart value: `dapr_placement.ha=true`
+2. **In-memory logs**. Use in-memory Raft log store for faster writes. The tradeoff is more placement table disseminations (and thus, network traffic) in an eventual Placement service pod failure. Helm chart value: `dapr_placement.cluster.forceInMemoryLog=true`
+3. **No metadata endpoint**. Disable the unauthenticated `/placement/state` endpoint which exposes placement table information for the Placement service. Helm chart value: `dapr_placement.metadataEnabled=false`
+4. **Timeouts** Control the sensitivity of network connectivity between the Placement service and the sidecars using the below timeout values. Default values are set, but you can adjust these based on your network conditions.
+   1. `dapr_placement.keepAliveTime` sets the interval at which the Placement service sends [keep alive](https://grpc.io/docs/guides/keepalive/) pings to Dapr sidecars on the gRPC stream to check if the connection is still alive. Lower values will lead to shorter actor rebalancing time in case of pod loss/restart, but higher network traffic during normal operation. Accepts values between `1s` and `10s`. Default is `2s`.
+   2. `dapr_placement.keepAliveTimeout` sets the timeout period for Dapr sidecars to respond to the Placement service's [keep alive](https://grpc.io/docs/guides/keepalive/) pings before the Placement service closes the connection. Lower values will lead to shorter actor rebalancing time in case of pod loss/restart, but higher network traffic during normal operation. Accepts values between `1s` and `10s`. Default is `3s`.
+   3. `dapr_placement.disseminateTimeout` sets the timeout period for dissemination to be delayed after actor membership change (usually related to pod restarts) to avoid excessive dissemination during multiple pod restarts. Higher values will reduce the frequency of dissemination, but delay the table dissemination. Accepts values between `1s` and `3s`. Default is `2s`.
+
+
 
 ## Service account tokens
 

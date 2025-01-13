@@ -6,10 +6,6 @@ weight: 2000
 description: "Learn more about the Dapr Workflow features and concepts"
 ---
 
-{{% alert title="Note" color="primary" %}}
-Dapr Workflow is currently in beta. [See known limitations for {{% dapr-latest-version cli="true" %}}]({{< ref "workflow-overview.md#limitations" >}}).
-{{% /alert %}}
-
 Now that you've learned about the [workflow building block]({{< ref workflow-overview.md >}}) at a high level, let's deep dive into the features and concepts included with the Dapr Workflow engine and SDKs. Dapr Workflow exposes several core features and concepts which are common across all supported languages. 
 
 {{% alert title="Note" color="primary" %}}
@@ -135,7 +131,7 @@ Because workflow retry policies are configured in code, the exact developer expe
 | --- | --- |
 | **Maximum number of attempts** | The maximum number of times to execute the activity or child workflow. |
 | **First retry interval** | The amount of time to wait before the first retry. |
-| **Backoff coefficient** | The amount of time to wait before each subsequent retry. |
+| **Backoff coefficient** | The coefficient used to determine the rate of increase of back-off. For example a coefficient of 2 doubles the wait of each subsequent retry. |
 | **Maximum retry interval** | The maximum amount of time to wait before each subsequent retry. |
 | **Retry timeout** | The overall timeout for retries, regardless of any configured max number of attempts. |
 
