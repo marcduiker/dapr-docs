@@ -34,9 +34,135 @@ In production scenarios, it is recommended to use a solution such as:
 
 If running on AWS EKS, you can [link an IAM role to a Kubernetes service account](https://docs.aws.amazon.com/eks/latest/userguide/create-service-account-iam-policy-and-role.html), which your pod can use.
 
-All of these solutions solve the same problem: They allow the Dapr runtime process (or sidecar) to retrive credentials dynamically, so that explicit credentials aren't needed. This provides several benefits, such as automated key rotation, and avoiding having to manage secrets.
+All of these solutions solve the same problem: They allow the Dapr runtime process (or sidecar) to retrieve credentials dynamically, so that explicit credentials aren't needed. This provides several benefits, such as automated key rotation, and avoiding having to manage secrets.
 
 Both Kiam and Kube2IAM work by intercepting calls to the [instance metadata service](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
+
+## Setting Up Dapr with AWS EKS Pod Identity
+
+This section provides a detailed walkthrough for setting up Dapr with AWS EKS Pod Identity for accessing AWS services.
+
+### Prerequisites
+
+- AWS CLI configured with appropriate permissions
+- kubectl installed
+- eksctl installed
+- Docker installed and configured
+- A Docker Hub account or another container registry
+
+### Create EKS Cluster and install Dapr
+
+Follow the official Dapr documentation for setting up an EKS cluster and installing Dapr:
+[Set up an Elastic Kubernetes Service (EKS) cluster](https://docs.dapr.io/operations/hosting/kubernetes/cluster/setup-eks/)
+
+### Create IAM Role and Enable Pod Identity
+
+1. Create IAM policy for AWS service access (example shown for a generic AWS service):
+
+```bash
+aws iam create-policy \
+    --policy-name dapr-service-policy \
+    --policy-document '{
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "SERVICE_NAME:ACTION1",
+                    "SERVICE_NAME:ACTION2"
+                ],
+                "Resource": "arn:aws:SERVICE_NAME:YOUR_AWS_REGION:YOUR_ACCOUNT_ID:resource/*"
+            }
+        ]
+    }'
+```
+
+2. Create IAM role with Pod Identity trust relationship:
+
+```bash
+aws iam create-role \
+    --role-name dapr-pod-identity-role \
+    --assume-role-policy-document '{
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": "pods.eks.amazonaws.com"
+                },
+                "Action": [
+                    "sts:AssumeRole",
+                    "sts:TagSession"
+                ]
+            }
+        ]
+    }'
+```
+
+3. Attach the policy to the role:
+
+```bash
+aws iam attach-role-policy \
+    --role-name dapr-pod-identity-role \
+    --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/dapr-service-policy
+```
+
+### Create Test Resources
+
+1. Create namespace:
+
+```bash
+kubectl create namespace dapr-test
+```
+
+2. Create service account:
+
+```bash
+kubectl apply -f k8s-config/service-account.yaml
+```
+
+3. Create Pod Identity association:
+
+```bash
+eksctl create podidentityassociation \
+    --cluster [your-cluster-name] \
+    --namespace dapr-test \
+    --region [your-aws-region] \
+    --service-account-name dapr-test-sa \
+    --role-arn arn:aws:iam::YOUR_ACCOUNT_ID:role/dapr-pod-identity-role
+```
+
+4. Create Dapr component for your AWS service:
+
+```bash
+kubectl apply -f components/aws-component.yaml
+```
+
+### Troubleshooting
+
+#### Authentication Issues
+
+If you see "You must be logged in to the server (Unauthorized)", update your kubeconfig:
+
+```bash
+aws eks update-kubeconfig --region [your-aws-region] --name [your-cluster-name]
+```
+
+#### Pod Identity Issues
+
+Verify Pod Identity association:
+
+```bash
+eksctl get podidentityassociation --cluster [your-cluster-name] --region [your-aws-region]
+```
+
+#### Dapr Component Issues
+
+Check Dapr sidecar logs:
+
+```bash
+kubectl logs -n dapr-test -l app=test-app -c daprd
+```
 
 ### Use an instance profile when running in stand-alone mode on AWS EC2
 
@@ -84,7 +210,6 @@ On Windows, the environment variable needs to be set before starting the `dapr` 
 
 {{< /tabs >}}
 
-
 ### Authenticate to AWS if using AWS SSO based profiles
 
 If you authenticate to AWS using [AWS SSO](https://aws.amazon.com/single-sign-on/), some AWS SDKs (including the Go SDK) don't yet support this natively. There are several utilities you can use to "bridge the gap" between AWS SSO-based credentials and "legacy" credentials, such as:
@@ -111,7 +236,7 @@ AWS_PROFILE=myprofile awshelper daprd...
  <!-- windows -->
 {{% codetab %}}
 
-On Windows, the environment variable needs to be set before starting the `awshelper` command, doing it inline (like in Linxu/MacOS) is not supported.
+On Windows, the environment variable needs to be set before starting the `awshelper` command, doing it inline (like in Linux/MacOS) is not supported.
 
 {{% /codetab %}}
 
@@ -123,4 +248,7 @@ On Windows, the environment variable needs to be set before starting the `awshel
 
 ## Related links
 
-For more information, see [how the AWS SDK (which Dapr uses) handles credentials](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
+- For more information, see [how the AWS SDK (which Dapr uses) handles credentials](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
+- [EKS Pod Identity Documentation](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)
+- [AWS SDK Credentials Configuration](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials)
+- [Set up an Elastic Kubernetes Service (EKS) cluster](https://docs.dapr.io/operations/hosting/kubernetes/cluster/setup-eks/)
