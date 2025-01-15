@@ -92,7 +92,7 @@ func main() {
 	}
 
 	input := dapr.ConversationInput{
-		Message: "hello world",
+		Message: "Please write a witty haiku about the Dapr distributed programming framework at dapr.io",
 		// Role:     nil, // Optional
 		// ScrubPII: nil, // Optional
 	}
@@ -134,7 +134,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut client = DaprClient::connect(address).await?;
 
-    let input = ConversationInputBuilder::new("hello world").build();
+    let input = ConversationInputBuilder::new("Please write a witty haiku about the Dapr distributed programming framework at dapr.io").build();
 
     let conversation_component = "echo";
 
@@ -179,7 +179,7 @@ dapr run --app-id conversation --dapr-grpc-port 50001 --log-level debug --resour
 **Expected output**
 
 ```
-  - '== APP == conversation output: hello world'
+  - '== APP == conversation output: Please write a witty haiku about the Dapr distributed programming framework at dapr.io'
 ```
 
 {{% /codetab %}}
