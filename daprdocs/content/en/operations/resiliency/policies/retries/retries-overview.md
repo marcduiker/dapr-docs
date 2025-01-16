@@ -66,7 +66,7 @@ The following retry options are configurable:
 | `maxInterval` | Determines the maximum interval between retries to which the [`exponential` back-off policy](#exponential-back-off-policy) can grow.<br/>Additional retries always occur after a duration of `maxInterval`. Defaults to `60s`. Valid values are of the form `5s`, `1m`, `1m30s`, etc |
 | `maxRetries` | The maximum number of retries to attempt. <br/>`-1` denotes an unlimited number of retries, while `0` means the request will not be retried (essentially behaving as if the retry policy were not set).<br/>Defaults to `-1`. |
 | `matching.httpStatusCodes` | Optional: a comma-separated string of [HTTP status codes or code ranges to retry](#retry-status-codes). Status codes not listed are not retried.<br/>Valid values: 100-599, [Reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)<br/>Format: `<code>` or range `<start>-<end>`<br/>Example: "429,501-503"<br/>Default: empty string `""` or field is not set. Retries on all HTTP errors. |
-| `matching.gRPCStatusCodes` | Optional: a comma-separated string of [gRPC status codes or code ranges to retry](#retry-status-codes). Status codes not listed are not retried.<br/>Valid values: 0-16, [Reference](https://grpc.io/docs/guides/status-codes/)<br/>Format: `<code>` or range `<start>-<end>`<br/>Example: "1,501-503"<br/>Default: empty string `""` or field is not set. Retries on all gRPC errors. |
+| `matching.gRPCStatusCodes` | Optional: a comma-separated string of [gRPC status codes or code ranges to retry](#retry-status-codes). Status codes not listed are not retried.<br/>Valid values: 0-16, [Reference](https://grpc.io/docs/guides/status-codes/)<br/>Format: `<code>` or range `<start>-<end>`<br/>Example: "4,8,14"<br/>Default: empty string `""` or field is not set. Retries on all gRPC errors. |
 
 
 ## Exponential back-off policy
@@ -88,25 +88,30 @@ When applications span multiple services, especially on dynamic environments lik
 
 The following table includes some examples of HTTP status codes you may receive and whether you should or should not retry certain operations.
 
-| HTTP Status Code        | Safe to retry?         | Description                  |
-| ----------------------- | ---------------------- | ---------------------------- |
-| 404 Not Found           | ❌ No                  | The resource doesn't exist.  |
-| 400 Bad Request         | ❌ No                  | Your request is invalid.     |
-| 401 Unauthorized        | ❌ No                  | Try getting new credentials. |
-| 503 Service Unavailable | ✅ Yes                 | Service might recover.       |
-| 504 Gateway Timeout     | ✅ Yes                 | Temporary network issue.     |
+| HTTP Status Code          | Retry Recommended?     | Description                  |
+| ------------------------- | ---------------------- | ---------------------------- |
+| 404 Not Found             | ❌ No                  | The resource doesn't exist.  |
+| 400 Bad Request           | ❌ No                  | Your request is invalid.     |
+| 401 Unauthorized          | ❌ No                  | Try getting new credentials. |
+| 408 Request Timeout       | ✅ Yes                 | The server timed out waiting for the request.       |
+| 429 Too Many Requests     | ✅ Yes                 | (Respect the `Retry-After` header, if present).     |
+| 500 Internal Server Error | ✅ Yes                 | The server encountered an unexpected condition.       |
+| 502 Bad Gateway           | ✅ Yes                 | A gateway or proxy received an invalid response.     |
+| 503 Service Unavailable   | ✅ Yes                 | Service might recover.       |
+| 504 Gateway Timeout       | ✅ Yes                 | Temporary network issue.     |
 
 ### gRPC 
 
 The following table includes some examples of gRPC status codes you may receive and whether you should or should not retry certain operations.
 
-| gRPC Status Code          | Safe to retry?          | Description                  |
+| gRPC Status Code          | Retry Recommended?      | Description                  |
 | ------------------------- | ----------------------- | ---------------------------- |
 | Code 1 CANCELLED          | ❌ No                   | N/A                          |
 | Code 3 INVALID_ARGUMENT   | ❌ No                   | N/A                          |
 | Code 4 DEADLINE_EXCEEDED  | ✅ Yes                  | Retry with backoff           |
 | Code 5 NOT_FOUND          | ❌ No                   | N/A                          |
 | Code 8 RESOURCE_EXHAUSTED | ✅ Yes                  | Retry with backoff           |
+| Code 14 UNAVAILABLE       | ✅ Yes                  | Retry with backoff           |
 
 ### Retry filter based on status codes
 
