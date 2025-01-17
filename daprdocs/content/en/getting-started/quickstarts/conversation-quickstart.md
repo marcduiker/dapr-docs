@@ -10,12 +10,7 @@ description: Get started with the Dapr conversation building block
 The conversation building block is currently in **alpha**. 
 {{% /alert %}}
 
-Let's take a look at how the [Dapr conversation building block]({{< ref conversation-overview.md >}})  
-
-You can try out this conversation quickstart by either:
-
-- [Running all applications in this sample simultaneously with the Multi-App Run template file]({{< ref "#run-using-multi-app-run" >}}), or
-- [Running one application at a time]({{< ref "#run-one-job-application-at-a-time" >}})
+Let's take a look at how the [Dapr conversation building block]({{< ref conversation-overview.md >}}) makes interacting with the Anthropic LLM easier. In this quickstart, you use the Anthropic component to communicate with the LLM and ask it for a poem about Dapr. 
 
 {{< tabs ".NET" >}}
 
@@ -101,7 +96,6 @@ Exited App successfully
 
 ### What happened?
 
-
 #### `conversation.yaml` LLM component
 
 In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components) directly of the quickstart, the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the Anthropic LLM component. 
@@ -139,13 +133,12 @@ var app = builder.Build();
 var conversationClient = app.Services.GetRequiredService<DaprConversationClient>();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-// Set prompt to send to the Anthropic LLM
+// Send prompt to send to the Anthropic LLM
 const string prompt = "Please write a witty sonnet about the Dapr distributed programming framework at dapr.io";
 var response = await conversationClient.ConverseAsync("conversation",
         [new(prompt, DaprConversationRole.Generic)]);
 Log.LogRequest(logger, prompt);
 
-// Send prompt to LLM
 var stringBuilder = new StringBuilder();
 foreach (var resp in response.Outputs)
 {
