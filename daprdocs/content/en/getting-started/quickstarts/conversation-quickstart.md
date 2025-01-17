@@ -101,15 +101,29 @@ Exited App successfully
 
 ### What happened?
 
-Running `dapr run -f .` in this Quickstart... 
 
-#### `dapr.yaml` Multi-App Run template file
+#### `conversation.yaml` LLM component
 
-Running the [Multi-App Run template file]({{< ref multi-app-dapr-run >}}) with `dapr run -f .` starts all applications in your project. In this Quickstart, the `dapr.yaml` file contains the following:
+In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components) directly of the quickstart, the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the Anthropic LLM component. 
 
 ```yml
-
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: conversation
+spec:
+  type: conversation.anthropic
+  version: v1
+  metadata:
+    - name: key
+      secretKeyRef:
+        name: anthropic
+        key: anthropic
+auth:
+  secretStore: envvar-secrets
 ```
+
+For authentication, the component also uses a secret store called [`envvar-secrets`](https://github.com/dapr/quickstarts/tree/master/conversation/components/envvar.yml). 
 
 #### `Program.cs` conversation app
 
