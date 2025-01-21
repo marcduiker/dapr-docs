@@ -12,7 +12,7 @@ The conversation building block is currently in **alpha**.
 
 Let's take a look at how the [Dapr conversation building block]({{< ref conversation-overview.md >}}) makes interacting with the Anthropic LLM easier. In this quickstart, you use the Anthropic component to communicate with the LLM and ask it for a poem about Dapr. 
 
-{{< tabs ".NET" >}}
+{{< tabs ".NET" Go >}}
 
  <!-- .NET -->
 {{% codetab %}}
@@ -42,13 +42,6 @@ From the root of the Quickstarts directory, navigate into the conversation direc
 cd conversation/csharp/sdk/conversation
 ```
 
-Install the dependencies:
-
-```bash
-dotnet restore
-dotnet build
-```
-
 ### Step 3: Launch the conversation service
 
 Start the conversation service with the following command:
@@ -59,7 +52,7 @@ dapr run --app-id conversation --resources-path "../../../components/" -- dotnet
 
 **Expected output**
 
-```dotnetcli
+```
 == APP == info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
 == APP ==       Start processing HTTP request POST http://localhost:50115/dapr.proto.runtime.v1.Dapr/ConverseAlpha1
 == APP == info: System.Net.Http.HttpClient.Default.ClientHandler[100]
@@ -159,6 +152,108 @@ static partial class Log
 
 {{% /codetab %}}
 
+ <!-- Go -->
+{{% codetab %}}
+
+
+### Step 1: Pre-requisites
+
+For this example, you will need:
+
+- [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started).
+- [Latest version of Go](https://go.dev/dl/).
+<!-- IGNORE_LINKS -->
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+<!-- END_IGNORE -->
+
+### Step 2: Set up the environment
+
+Clone the [sample provided in the Quickstarts repo](https://github.com/dapr/quickstarts/tree/master/conversation).
+
+```bash
+git clone https://github.com/dapr/quickstarts.git
+```
+
+From the root of the Quickstarts directory, navigate into the conversation directory:
+
+```bash
+cd conversation/go/sdk/conversation
+```
+
+### Step 3: Launch the conversation service
+
+Start the conversation service with the following command:
+
+```bash
+
+```
+
+**Expected output**
+
+```
+
+```
+
+### What happened?
+
+#### `conversation.yaml` LLM component
+
+In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components) directly of the quickstart, the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the Anthropic LLM component. 
+
+```yml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: echo
+spec:
+  type: conversation.echo
+  version: v1
+```
+
+For authentication, the component also uses a secret store called [`envvar-secrets`](https://github.com/dapr/quickstarts/tree/master/conversation/components/envvar.yml). 
+
+#### `conversation.go` conversation app
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	dapr "github.com/dapr/go-sdk/client"
+)
+
+func main() {
+	client, err := dapr.NewClient()
+	if err != nil {
+		panic(err)
+	}
+
+	input := dapr.ConversationInput{
+		Message: "hello world",
+		// Role:     nil, // Optional
+		// ScrubPII: nil, // Optional
+	}
+
+	fmt.Printf("conversation input: %s\n", input.Message)
+
+	var conversationComponent = "echo"
+
+	request := dapr.NewConversationRequest(conversationComponent, []dapr.ConversationInput{input})
+
+	resp, err := client.ConverseAlpha1(context.Background(), request)
+	if err != nil {
+		log.Fatalf("err: %v", err)
+	}
+
+	fmt.Printf("conversation output: %s\n", resp.Outputs[0].Result)
+}
+```
+
+{{% /codetab %}}
+
 {{< /tabs >}}
 
 ## Demo
@@ -177,6 +272,7 @@ Join the discussion in our [discord channel](https://discord.com/channels/778680
 
 - SDK samples of this quickstart:
   - [.NET](https://github.com/dapr/quickstarts/tree/master/conversation/go/http)
+  - [Go](todo)
 - Learn more about [the conversation building block]({{< ref conversation-overview.md >}})
 
 {{< button text="Explore Dapr tutorials  >>" page="getting-started/tutorials/_index.md" >}}
