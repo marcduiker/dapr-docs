@@ -197,7 +197,7 @@ Entity management is only possible when using [Microsoft Entra ID Authentication
 
 ## Receiving custom properties
 
-By default, Dapr does not forward [custom properties](https://learn.microsoft.com/en-us/azure/event-hubs/add-custom-data-event). However, by setting the subscription metadata `requireAllProperties` to `"true"`, you can receive custom properties as HTTP headers.
+By default, Dapr does not forward [custom properties](https://learn.microsoft.com/azure/event-hubs/add-custom-data-event). However, by setting the subscription metadata `requireAllProperties` to `"true"`, you can receive custom properties as HTTP headers.
 
 ```yaml
 apiVersion: dapr.io/v2alpha1
