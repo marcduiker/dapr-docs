@@ -116,7 +116,7 @@ AWS_PROFILE=myprofile awshelper daprd...
  <!-- windows -->
 {{% codetab %}}
 
-On Windows, the environment variable needs to be set before starting the `awshelper` command, doing it inline (like in Linux/MacOS) is not supported.
+On Windows, the environment variable needs to be set before starting the `awshelper` command; doing it inline (like in Linux/MacOS) is not supported.
 
 {{% /codetab %}}
 
