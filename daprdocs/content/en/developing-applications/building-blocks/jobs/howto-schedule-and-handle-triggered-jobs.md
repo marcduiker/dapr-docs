@@ -26,7 +26,7 @@ In your code, set up and schedule jobs within your application.
 
 <!-- .NET -->
 
-The following .NET SDK code sample schedules the job named `prod-db-backup`. Our job data will contain information
+The following .NET SDK code sample schedules the job named `prod-db-backup`. The job data contains information
 about the database we're seeking to make regular backups of. Over the course of this example, we'll do the following:
 - Define types used in the rest of the example
 - Register an endpoint during application startup that handles all job trigger invocations on the service
