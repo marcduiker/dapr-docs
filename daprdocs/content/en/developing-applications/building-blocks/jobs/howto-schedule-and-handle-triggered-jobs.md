@@ -55,7 +55,7 @@ internal sealed record BackupJobData([property: JsonPropertyName("task")] string
 internal sealed record BackupMetadata([property: JsonPropertyName("DBName")]string DatabaseName, [property: JsonPropertyName("BackupLocation")] string BackupLocation);
 ```
 
-Next, we'll set up a handler as part of our application setup that will be called anytime a job is triggered on our
+Next, set up a handler as part of your application setup that will be called anytime a job is triggered on your
 application. It's the responsibility of this handler to identify how jobs should be processed based on the job name provided.
 
 This works by registering a handler with ASP.NET Core at `/job/<job-name>` where `<job-name>` is parameterized and simply
