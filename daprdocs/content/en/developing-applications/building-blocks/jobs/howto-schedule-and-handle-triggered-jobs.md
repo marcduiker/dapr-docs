@@ -58,7 +58,7 @@ internal sealed record BackupMetadata([property: JsonPropertyName("DBName")]stri
 Next, set up a handler as part of your application setup that will be called anytime a job is triggered on your
 application. It's the responsibility of this handler to identify how jobs should be processed based on the job name provided.
 
-This works by registering a handler with ASP.NET Core at `/job/<job-name>` where `<job-name>` is parameterized and simply
+This works by registering a handler with ASP.NET Core at `/job/<job-name>`, where `<job-name>` is parameterized and 
 passed into this handler delegate, meeting Dapr's expectation that an endpoint is available to handle triggered named jobs.
 
 Populate your `Program.cs` file with the following: 
