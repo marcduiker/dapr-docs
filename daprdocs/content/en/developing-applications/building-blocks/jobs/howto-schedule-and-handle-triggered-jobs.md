@@ -45,7 +45,7 @@ only the service that schedules a job will receive trigger invocations for it. A
 registered that can handle the job trigger, and that requires the `Microsoft.NET.Sdk.Web` SDK, it's recommended that you
 use an ASP.NET Core project for this purpose.
 
-We'll start by defining some types to 
+Start by defining types to 
 persist our backup job data and apply our own JSON property name attributes to the properties so they're consistent 
 with other language examples.
 
