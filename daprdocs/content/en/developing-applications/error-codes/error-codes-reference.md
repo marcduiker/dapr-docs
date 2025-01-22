@@ -7,8 +7,8 @@ weight: 20
 ---
 
 The following tables list the error codes returned by Dapr runtime.
-The error codes are returned in the response body of an HTTP request or in the `ErrorInfo` section of a gRPC Status response, if one is present. 
-An effort is underway to enrich all gRPC error responses according to the [Richer Error Model]({{< ref "grpc-error-codes.md#richer-grpc-error-model" >}}). Error codes without a corresponding gRPC code indicate errors that have not yet been updated to this model yet.
+The error codes are returned in the response body of an HTTP request or in the `ErrorInfo` section of a gRPC status response, if one is present. 
+An effort is underway to enrich all gRPC error responses according to the [Richer Error Model]({{< ref "grpc-error-codes.md#richer-grpc-error-model" >}}). Error codes without a corresponding gRPC code indicate those errors have not yet been updated to this model.
 
 ### Actors API
 
