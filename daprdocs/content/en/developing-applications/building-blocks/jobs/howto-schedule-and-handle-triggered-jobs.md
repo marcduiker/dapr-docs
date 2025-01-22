@@ -32,7 +32,7 @@ about the database that you'll be seeking to backup regularly. Over the course o
 - Register an endpoint during application startup that handles all job trigger invocations on the service
 - Register the job with Dapr
 
-In the following example, we'll create some records that we'll serialize and register alongside the job so the information 
+In the following example, you'll create records that you'll serialize and register alongside the job so the information 
 is available when the job is triggered in the future:
 - The name of the backup task (`db-backup`)
 - The backup task's `Metadata`, including:
