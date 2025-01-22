@@ -97,7 +97,7 @@ await app.RunAsync();
 Finally, the job itself needs to be registered with Dapr so it can be triggered at a later point in time. This could happen
 by injecting a `DaprJobsClient` into a class and executing as part of an inbound operation to your application, but for
 this example's purposes, it'll go at the bottom of the `Program.cs` file you started above. Because you'll be using the
-`DaprJobsClient` we registered with dependency injection, we need to start by creating a scope so we can access it.
+`DaprJobsClient` you registered with dependency injection, start by creating a scope so you can access it.
 
 ```cs
 //Create a scope so we can access the registered DaprJobsClient
