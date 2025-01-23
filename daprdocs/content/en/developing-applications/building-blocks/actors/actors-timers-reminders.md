@@ -139,7 +139,7 @@ DELETE http://localhost:3500/v1.0/actors/<actorType>/<actorId>/reminders/<name>
 
 If an actor reminder is triggered and the app does not return a 2** code to the runtime (e.g. because of a connection issue),
 actor reminders will be retried up to three times with a backoff interval of one second between each attempt. There may be 
-additional retries attempted in accordance with any optionally applied [actor resiliency policy](https://docs.dapr.io/operations/resiliency/policies/#overriding-default-retries). 
+additional retries attempted in accordance with any optionally applied [actor resiliency policy]({{< ref "policies.md#overriding-default-retries" >}}). 
 
 Refer [api spec]({{< ref "actors_api.md#invoke-reminder" >}}) for more details.
 
