@@ -13,7 +13,6 @@ into the features and concepts included with the Dapr Jobs engine and SDKs. Dapr
 which are common across all supported languages.
 
 
-Dapr Jobs provide a robust and highly-scalable API for scheduling operations to be triggered in the future.
 
 ### Job identity
 
