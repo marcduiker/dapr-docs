@@ -43,7 +43,7 @@ Create an ASP.NET Core project and add the latest version of `Dapr.Jobs` from Nu
 
 > **Note:** While it's not strictly necessary
 for your project to use the `Microsoft.NET.Sdk.Web` SDK to create jobs, as of the time this documentation is authored,
-only the service that schedules a job will receive trigger invocations for it. As those invocations expect an endpoint
+only the service that schedules a job receives trigger invocations for it. As those invocations expect an endpoint
 that can handle the job trigger and requires the `Microsoft.NET.Sdk.Web` SDK, it's recommended that you
 use an ASP.NET Core project for this purpose.
 
