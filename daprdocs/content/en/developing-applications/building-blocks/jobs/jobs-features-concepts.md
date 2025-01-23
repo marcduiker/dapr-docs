@@ -112,8 +112,8 @@ If a gRPC server isn't registered with Dapr when the application starts up, Dapr
 POST request to the endpoint `/job/<job-name>`. The body includes the following information about the job:
 - `Schedule`: When the job triggers occur
 - `RepeatCount`: An optional value indicating how often the job should repeat
-- DueTime: An optional point in time representing either the one time when the job should execute (if not recurring)
-or the start join from which the schedule should take effect
+- `DueTime`: An optional point in time representing either the one time when the job should execute (if not recurring)
+or the not-before time from which the schedule should take effect
 - `Ttl`: An optional value indicating when the job should expire
 - `Payload`: A collection of bytes containing data originally stored when the job was scheduled
 
