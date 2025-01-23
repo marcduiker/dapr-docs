@@ -20,7 +20,103 @@ When you [run `dapr init` in either self-hosted mode or on Kubernetes]({{< ref i
 
 In your code, set up and schedule jobs within your application.
 
-{{< tabs "Go" >}}
+{{< tabs ".NET" "Go" >}}
+
+{{% codetab %}}
+
+<!-- .NET -->
+
+The following .NET SDK code sample schedules the job named `prod-db-backup`. The job data contains information
+about the database that you'll be seeking to backup regularly. Over the course of this example, you'll:
+- Define types used in the rest of the example
+- Register an endpoint during application startup that handles all job trigger invocations on the service
+- Register the job with Dapr
+
+In the following example, you'll create records that you'll serialize and register alongside the job so the information 
+is available when the job is triggered in the future:
+- The name of the backup task (`db-backup`)
+- The backup task's `Metadata`, including:
+  - The database name (`DBName`)
+  - The database location (`BackupLocation`)
+
+Create an ASP.NET Core project and add the latest version of `Dapr.Jobs` from NuGet. 
+
+> **Note:** While it's not strictly necessary
+for your project to use the `Microsoft.NET.Sdk.Web` SDK to create jobs, as of the time this documentation is authored,
+only the service that schedules a job receives trigger invocations for it. As those invocations expect an endpoint
+that can handle the job trigger and requires the `Microsoft.NET.Sdk.Web` SDK, it's recommended that you
+use an ASP.NET Core project for this purpose.
+
+Start by defining types to persist our backup job data and apply our own JSON property name attributes to the properties 
+so they're consistent with other language examples.
+
+```cs
+//Define the types that we'll represent the job data with
+internal sealed record BackupJobData([property: JsonPropertyName("task")] string Task, [property: JsonPropertyName("metadata")] BackupMetadata Metadata);
+internal sealed record BackupMetadata([property: JsonPropertyName("DBName")]string DatabaseName, [property: JsonPropertyName("BackupLocation")] string BackupLocation);
+```
+
+Next, set up a handler as part of your application setup that will be called anytime a job is triggered on your
+application. It's the responsibility of this handler to identify how jobs should be processed based on the job name provided.
+
+This works by registering a handler with ASP.NET Core at `/job/<job-name>`, where `<job-name>` is parameterized and 
+passed into this handler delegate, meeting Dapr's expectation that an endpoint is available to handle triggered named jobs.
+
+Populate your `Program.cs` file with the following: 
+
+```cs
+using System.Text;
+using System.Text.Json;
+using Dapr.Jobs;
+using Dapr.Jobs.Extensions;
+using Dapr.Jobs.Models;
+using Dapr.Jobs.Models.Responses;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDaprJobsClient();
+var app = builder.Build();
+
+//Registers an endpoint to receive and process triggered jobs
+var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+app.MapDaprScheduledJobHandler((string jobName, DaprJobDetails jobDetails, ILogger logger, CancellationToken cancellationToken) => {
+  logger?.LogInformation("Received trigger invocation for job '{jobName}'", jobName);
+  switch (jobName)
+  {
+    case "prod-db-backup":
+      // Deserialize the job payload metadata
+      var jobData = JsonSerializer.Deserialize<BackupJobData>(jobDetails.Payload);
+      
+      // Process the backup operation - we assume this is implemented elsewhere in your code
+      await BackupDatabaseAsync(jobData, cancellationToken);
+      break;
+  }
+}, cancellationTokenSource.Token);
+
+await app.RunAsync();
+```
+
+Finally, the job itself needs to be registered with Dapr so it can be triggered at a later point in time. You can do this
+by injecting a `DaprJobsClient` into a class and executing as part of an inbound operation to your application, but for
+this example's purposes, it'll go at the bottom of the `Program.cs` file you started above. Because you'll be using the
+`DaprJobsClient` you registered with dependency injection, start by creating a scope so you can access it.
+
+```cs
+//Create a scope so we can access the registered DaprJobsClient
+await using scope = app.Services.CreateAsyncScope();
+var daprJobsClient = scope.ServiceProvider.GetRequiredService<DaprJobsClient>();
+
+//Create the payload we wish to present alongside our future job triggers
+var jobData = new BackupJobData("db-backup", new BackupMetadata("my-prod-db", "/backup-dir")); 
+
+//Serialize our payload to UTF-8 bytes
+var serializedJobData = JsonSerializer.SerializeToUtf8Bytes(jobData);
+
+//Schedule our backup job to run every minute, but only repeat 10 times
+await daprJobsClient.ScheduleJobAsync("prod-db-backup", DaprJobSchedule.FromDuration(TimeSpan.FromMinutes(1)),
+    serializedJobData, repeats: 10);
+```
+
+{{% /codetab %}}
 
 {{% codetab %}}
 
