@@ -10,7 +10,6 @@ Now that you've learned about the [jobs building block]({{< ref jobs-overview.md
 into the features and concepts included with the Dapr Jobs engine and SDKs. Dapr Jobs:
 - Provides a robust and scalable API for scheduling operations to be triggered in the future.
 - Exposes several capabilities which are common across all supported languages.
-which are common across all supported languages.
 
 
 
