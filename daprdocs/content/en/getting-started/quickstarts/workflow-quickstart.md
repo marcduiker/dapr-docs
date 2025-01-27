@@ -512,12 +512,8 @@ For this example, you will need:
 <!-- END_IGNORE -->
 - [.NET 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0), [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or [.NET 9](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) installed
 
-{{% alert title="Note" color="primary" %}}
-
-.NET 7 is the minimally supported version of .NET by Dapr.Workflows in Dapr v1.15. Only .NET 8 and .NET 9
+**NOTE:** .NET 7 is the minimally supported version of .NET by Dapr.Workflows in Dapr v1.15. Only .NET 8 and .NET 9
 will be supported in Dapr v1.16 and later releases.
-
-{{% /alert %}}
 
 ### Step 2: Set up the environment
 

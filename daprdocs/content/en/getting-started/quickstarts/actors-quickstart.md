@@ -35,7 +35,7 @@ For this example, you will need:
 <!-- END_IGNORE -->
 - [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0), [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or [.NET 9](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) installed
 
-**NOTE:** .NET 6 is supported as the minimum required for the Dapr .NET SDK packages in this release. Only .NET 8 and .NET 9
+**NOTE:** .NET 6 is the minimally supported version of .NET for the Dapr .NET SDK packages in this release. Only .NET 8 and .NET 9
 will be supported in Dapr v1.16 and later releases.
 
 ### Step 1: Set up the environment
