@@ -74,9 +74,54 @@ Dapr apps are also able to subscribe to raw events coming from existing pub/sub 
 
 ### Programmatically subscribe to raw events
 
-When subscribing programmatically, add the additional metadata entry for `rawPayload` so the Dapr sidecar automatically wraps the payloads into a CloudEvent that is compatible with current Dapr SDKs.
+When subscribing programmatically, add the additional metadata entry for `rawPayload` - `isRawPayload` on .NET - so the Dapr sidecar automatically wraps the payloads into a CloudEvent that is compatible with current Dapr SDKs.
 
-{{< tabs "Python" "PHP SDK" >}}
+{{< tabs ".NET" "Python" "PHP SDK" >}}
+
+{{% codetab %}}
+
+```csharp
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.MapGet("/", () => "Subscriber API");
+
+app.MapGet("/dapr/subscribe", () =>
+{
+    var subscriptions = new[]
+    {
+        new
+        {
+            pubsubname = "pubsub",
+            topic = "messages",
+            route = "/messages",
+            metadata = new Dictionary<string, string>
+            {
+                { "isRawPayload", "true" }
+            }
+        }
+    };
+    return Results.Ok(subscriptions);
+});
+
+app.MapPost("/messages", async (HttpContext context) =>
+{
+    using var reader = new StreamReader(context.Request.Body);
+    var json = await reader.ReadToEndAsync();
+
+    Console.WriteLine($"Raw message received: {json}");
+
+    return Results.Ok();
+});
+
+app.Run();
+```
+
+{{% /codetab %}}
 
 {{% codetab %}}
 
@@ -151,7 +196,7 @@ spec:
     default: /dsstatus
   pubsubname: pubsub
   metadata:
-    rawPayload: "true"
+    isRawPayload: "true"
 scopes:
 - app1
 - app2
@@ -162,3 +207,4 @@ scopes:
 - Learn more about [publishing and subscribing messages]({{< ref pubsub-overview.md >}})
 - List of [pub/sub components]({{< ref supported-pubsub >}})
 - Read the [API reference]({{< ref pubsub_api.md >}})
+- Read the .NET sample on how to [consume Kafka messages without CloudEvents](https://github.com/dapr/samples/pubsub-raw-payload)
