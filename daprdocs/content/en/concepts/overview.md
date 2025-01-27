@@ -76,7 +76,7 @@ Dapr exposes its HTTP and gRPC APIs as a sidecar architecture, either as a conta
 ## Hosting environments
 
 Dapr can be hosted in multiple environments, including:
-- Self-hosted on a Windows/Linux/macOS machine for local development 
+- Self-hosted on a Windows/Linux/macOS machine for local development and in production
 - On Kubernetes or clusters of physical or virtual machines in production
 
 ### Self-hosted local development
