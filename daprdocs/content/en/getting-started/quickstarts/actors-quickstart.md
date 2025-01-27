@@ -20,8 +20,8 @@ As a quick overview of the .NET actors quickstart:
 1. Using a `SmartDevice.Service` microservice, you host:
    - Two `SmokeDetectorActor` smoke alarm objects
    - A `ControllerActor` object that commands and controls the smart devices  
-1. Using a `SmartDevice.Client` console app, the client app interacts with each actor, or the controller, to perform actions in aggregate. 
-1. The `SmartDevice.Interfaces` contains the shared interfaces and data types used by both the service and client apps.
+2. Using a `SmartDevice.Client` console app, the client app interacts with each actor, or the controller, to perform actions in aggregate. 
+3. The `SmartDevice.Interfaces` contains the shared interfaces and data types used by both the service and client apps.
 
 <img src="/images/actors-quickstart/actors-quickstart.png" width=800 style="padding-bottom:15px;">
 
