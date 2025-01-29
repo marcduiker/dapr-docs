@@ -10,11 +10,9 @@ description: "Overview of the conversation API building block"
 The conversation API is currently in [alpha]({{< ref "certification-lifecycle.md#certification-levels" >}}).
 {{% /alert %}}
 
-Using the Dapr conversation API, you can reduce the complexity of interacting with Large Language Models (LLMs) and enable critical performance and security functionality with features like prompt caching and personally identifiable information (PII) data obfuscation.
+Dapr's conversation API reduces the complexity of securely and reliably interacting with Large Language Models (LLM) at scale. Whether you're a developer who doesn't have the necessary native SDKs or a polyglot shop who just wants to focus on the prompt aspects of LLM interactions, the conversation API provides one consistent API entry point to talk to underlying LLM providers. 
 
 <img src="/images/conversation-overview.png" width=800 alt="Diagram showing the flow of a user's app communicating with Dapr's LLM components.">
-
-Dapr's conversation API reduces the complexity of securely and reliably interacting with Large Language Models (LLM) at scale. Whether you're a developer who doesn't have the necessary native SDKs or a polyglot shop who just wants to focus on the prompt aspects of LLM interactions, the conversation API provides one consistent API entry point to talk to underlying LLM providers. 
 
 In additon to enabling critical performance and security functionality (like [prompt caching]({{< ref "#prompt-caching" >}}) and [PII scrubbing]({{< ref "#personally-identifiable-information-pii-obfuscation" >}})), you can also pair the conversation API with Dapr functionalities, like:
 - Resiliency circuit breakers and retries to circumvent limit and token errors, or 
