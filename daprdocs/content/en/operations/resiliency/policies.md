@@ -38,7 +38,7 @@ If you don't specify a timeout value, the policy does not enforce a time and def
 With `retries`, you can define a retry strategy for failed operations, including requests failed due to triggering a defined timeout or circuit breaker policy. 
 
 {{% alert title="Pub/sub component retries vs inbound resiliency" color="warning" %}}
-Each [pub/sub component]({{< ref supported-pubsub >}}) has its own built-in retry behaviors, unique to their third party and not set by Dapr. Explicity applying a Dapr resiliency policy doesn't override these implicit retry policies. Rather, the resiliency policy augments the built-in retry, which can cause repetitive clustering of messages.
+Each [pub/sub component]({{< ref supported-pubsub >}}) has its own built-in retry behaviors, unique to the message broker solution and unrelated to Dapr. Explicity applying a Dapr resiliency policy doesn't override these implicit retry policies. Rather, the resiliency policy augments the built-in retry, which can cause repetitive clustering of messages.
 {{% /alert %}}
 
 The following retry options are configurable:
