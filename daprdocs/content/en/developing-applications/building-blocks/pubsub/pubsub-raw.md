@@ -20,12 +20,52 @@ Not using CloudEvents disables support for tracing, event deduplication per mess
 
 To disable CloudEvent wrapping, set the `rawPayload` metadata to `true` as part of the publishing request. This allows subscribers to receive these messages without having to parse the CloudEvent schema.
 
-{{< tabs curl "Python SDK" "PHP SDK">}}
+{{< tabs curl ".NET" "Python SDK" "PHP SDK">}}
 
 {{% codetab %}}
 ```bash
 curl -X "POST" http://localhost:3500/v1.0/publish/pubsub/TOPIC_A?metadata.rawPayload=true -H "Content-Type: application/json" -d '{"order-number": "345"}'
 ```
+{{% /codetab %}}
+
+{{% codetab %}}
+
+```csharp
+using Dapr.Client;
+using Shared;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers().AddDapr();
+
+var app = builder.Build();
+
+app.MapGet("/", () => "Publisher API");
+
+app.MapPost("/publish", async (DaprClient daprClient) =>
+{
+    var message = new Message(
+        Guid.NewGuid().ToString(),
+        $"Hello at {DateTime.UtcNow}",
+        DateTime.UtcNow
+    );
+
+    await daprClient.PublishEventAsync(
+        "pubsub",           // pubsub name
+        "messages",         // topic name
+        message,           // message data
+        new Dictionary<string, string> 
+        { 
+            { "rawPayload", "true" },
+            { "content-type", "application/json" }
+        }
+    );
+    
+    return Results.Ok(message);
+});
+
+app.Run();
+```
+
 {{% /codetab %}}
 
 {{% codetab %}}
