@@ -201,7 +201,7 @@ When you ran `dapr init` during Dapr install, the following YAML files were gene
 - [`dapr.yaml` Multi-App Run template file]({{< ref "#dapryaml-multi-app-run-template-file" >}})
 - [`pubsub.yaml` component file]({{< ref "#pubsubyaml-component-file" >}})
 
-Running `dapr run -f .` in this Quickstart started the [conversation Program.cs]({{< ref "#programcs-conversation-app" >}}).
+Running `dapr run -f .` in this Quickstart started [conversation.go]({{< ref "#programcs-conversation-app" >}}).
 
 #### `dapr.yaml` Multi-App Run template file
 
