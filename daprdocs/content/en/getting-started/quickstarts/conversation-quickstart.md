@@ -10,7 +10,279 @@ description: Get started with the Dapr conversation building block
 The conversation building block is currently in **alpha**. 
 {{% /alert %}}
 
-Let's take a look at how the [Dapr conversation building block]({{< ref conversation-overview.md >}}) makes interacting with the LLM component easier. In this quickstart, you use the Anthropic component to communicate with the LLM and ask it for a poem about Dapr. 
+Let's take a look at how the [Dapr conversation building block]({{< ref conversation-overview.md >}}) makes interacting with the LLM component easier. In this quickstart, you use the echo component to communicate with the LLM and ask it for a poem about Dapr. 
+
+You can try out this conversation quickstart by either:
+
+- [Running the application in this sample with the Multi-App Run template file]({{< ref "#run-the-app-with-the-template-file" >}}), or
+- [Running the application without the template]({{< ref "#run-the-app-without-the-template" >}})
+
+
+## Run the app with the template file
+
+{{< tabs ".NET" Go >}}
+
+ <!-- .NET -->
+{{% codetab %}}
+
+
+### Step 1: Pre-requisites
+
+For this example, you will need:
+
+- [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started).
+- [.NET SDK or .NET 6 SDK installed](https://dotnet.microsoft.com/download).
+<!-- IGNORE_LINKS -->
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+<!-- END_IGNORE -->
+
+### Step 2: Set up the environment
+
+Clone the [sample provided in the Quickstarts repo](https://github.com/dapr/quickstarts/tree/master/conversation).
+
+```bash
+git clone https://github.com/dapr/quickstarts.git
+```
+
+From the root of the Quickstarts directory, navigate into the conversation directory:
+
+```bash
+cd conversation/csharp/sdk
+```
+
+### Step 3: Launch the conversation service
+
+Start the conversation service with the following command:
+
+```bash
+dapr run -f .
+```
+
+**Expected output**
+
+```
+== APP - conversation == Input sent: What is dapr?
+== APP - conversation == Output response: What is dapr?
+```
+
+### What happened?
+
+When you ran `dapr init` during Dapr install, the following YAML files were generated in the `.dapr/components` directory: 
+- [`dapr.yaml` Multi-App Run template file]({{< ref "#dapryaml-multi-app-run-template-file" >}})
+- [`pubsub.yaml` component file]({{< ref "#pubsubyaml-component-file" >}})
+
+Running `dapr run -f .` in this Quickstart started the [conversation Program.cs]({{< ref "#programcs-conversation-app" >}}).
+
+#### `dapr.yaml` Multi-App Run template file
+
+Running the [Multi-App Run template file]({{< ref multi-app-dapr-run >}}) with `dapr run -f .` starts all applications in your project. This Quickstart has only one application, so the `dapr.yaml` file contains the following: 
+
+```yml
+version: 1
+common:
+  resourcesPath: ../../components/
+apps:
+  - appDirPath: ./conversation/
+    appID: conversation
+    daprHTTPPort: 3500
+    command: ["dotnet", "run"]
+```
+
+#### `conversation.yaml` LLM component
+
+In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components), the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the echo mock LLM component. 
+
+```yml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: echo
+spec:
+  type: conversation.echo
+  version: v1
+```
+
+#### `Program.cs` conversation app
+
+In the application code:
+- The app sends an input "What is dapr?" to the echo mock LLM component.
+- The mock LLM echoes "What is dapr?". 
+
+```csharp
+using Dapr.AI.Conversation;
+using Dapr.AI.Conversation.Extensions;
+
+class Program
+{
+  private const string ConversationComponentName = "echo";
+
+  static async Task Main(string[] args)
+  {
+    const string prompt = "What is dapr?";
+
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Services.AddDaprConversationClient();
+    var app = builder.Build();
+
+    //Instantiate Dapr Conversation Client
+    var conversationClient = app.Services.GetRequiredService<DaprConversationClient>();
+
+    try
+    {
+      // Send a request to the echo mock LLM component
+      var response = await conversationClient.ConverseAsync(ConversationComponentName, [new(prompt, DaprConversationRole.Generic)]);
+      Console.WriteLine("Input sent: " + prompt);
+
+      if (response != null)
+      {
+        Console.Write("Output response:");
+        foreach (var resp in response.Outputs)
+        {
+          Console.WriteLine($" {resp.Result}");
+        }
+      }
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine("Error: " + ex.Message);
+    }
+  }
+}
+```
+
+{{% /codetab %}}
+
+ <!-- Go -->
+{{% codetab %}}
+
+
+### Step 1: Pre-requisites
+
+For this example, you will need:
+
+- [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started).
+- [Latest version of Go](https://go.dev/dl/).
+<!-- IGNORE_LINKS -->
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+<!-- END_IGNORE -->
+
+### Step 2: Set up the environment
+
+Clone the [sample provided in the Quickstarts repo](https://github.com/dapr/quickstarts/tree/master/conversation).
+
+```bash
+git clone https://github.com/dapr/quickstarts.git
+```
+
+From the root of the Quickstarts directory, navigate into the conversation directory:
+
+```bash
+cd conversation/go/sdk
+```
+
+### Step 3: Launch the conversation service
+
+Start the conversation service with the following command:
+
+```bash
+dapr run -f .
+```
+
+**Expected output**
+
+```
+== APP - conversation == Input sent: What is dapr?
+== APP - conversation == Output response: What is dapr?
+```
+
+### What happened?
+
+When you ran `dapr init` during Dapr install, the following YAML files were generated in the `.dapr/components` directory: 
+- [`dapr.yaml` Multi-App Run template file]({{< ref "#dapryaml-multi-app-run-template-file" >}})
+- [`pubsub.yaml` component file]({{< ref "#pubsubyaml-component-file" >}})
+
+Running `dapr run -f .` in this Quickstart started the [conversation Program.cs]({{< ref "#programcs-conversation-app" >}}).
+
+#### `dapr.yaml` Multi-App Run template file
+
+Running the [Multi-App Run template file]({{< ref multi-app-dapr-run >}}) with `dapr run -f .` starts all applications in your project. This Quickstart has only one application, so the `dapr.yaml` file contains the following: 
+
+```yml
+version: 1
+common:
+  resourcesPath: ../../components/
+apps:
+  - appDirPath: ./conversation/
+    appID: conversation
+    daprHTTPPort: 3501
+    command: ["go", "run", "."]
+```
+
+#### `conversation.yaml` LLM component
+
+In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components) directly of the quickstart, the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the echo LLM component. 
+
+```yml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: echo
+spec:
+  type: conversation.echo
+  version: v1
+```
+
+For authentication, the component also uses a secret store called [`envvar-secrets`](https://github.com/dapr/quickstarts/tree/master/conversation/components/envvar.yml). 
+
+#### `conversation.go` conversation app
+
+In the application code:
+- The app sends an input "What is dapr?" to the echo mock LLM component.
+- The mock LLM echoes "What is dapr?". 
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	dapr "github.com/dapr/go-sdk/client"
+)
+
+func main() {
+	client, err := dapr.NewClient()
+	if err != nil {
+		panic(err)
+	}
+
+	input := dapr.ConversationInput{
+		Message: "What is dapr?",
+		// Role:     nil, // Optional
+		// ScrubPII: nil, // Optional
+	}
+
+	fmt.Println("Input sent:", input.Message)
+
+	var conversationComponent = "echo"
+
+	request := dapr.NewConversationRequest(conversationComponent, []dapr.ConversationInput{input})
+
+	resp, err := client.ConverseAlpha1(context.Background(), request)
+	if err != nil {
+		log.Fatalf("err: %v", err)
+	}
+
+	fmt.Println("Output response:", resp.Outputs[0].Result)
+}
+```
+
+{{% /codetab %}}
+
+{{< /tabs >}}
+
+## Run the app without the template
 
 {{< tabs ".NET" Go >}}
 
@@ -42,112 +314,25 @@ From the root of the Quickstarts directory, navigate into the conversation direc
 cd conversation/csharp/sdk/conversation
 ```
 
+Install the dependencies:
+
+```bash
+dotnet build
+```
+
 ### Step 3: Launch the conversation service
 
 Start the conversation service with the following command:
 
 ```bash
-dapr run --app-id conversation --resources-path "../../../components/" -- dotnet run
+dapr run --app-id conversation --resources-path ../../../components/ -- dotnet run
 ```
 
 **Expected output**
 
 ```
-== APP == info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
-== APP ==       Start processing HTTP request POST http://localhost:50115/dapr.proto.runtime.v1.Dapr/ConverseAlpha1
-== APP == info: System.Net.Http.HttpClient.Default.ClientHandler[100]
-== APP ==       Sending HTTP request POST http://localhost:50115/dapr.proto.runtime.v1.Dapr/ConverseAlpha1
-== APP == info: System.Net.Http.HttpClient.Default.ClientHandler[101]
-== APP ==       Received HTTP response headers after 3241.804ms - 200
-== APP == info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
-== APP ==       End processing HTTP request after 3260.3206ms - 200
-== APP == info: Program[1330097018]
-== APP ==       Sent prompt to conversation API: 'Please write a witty sonnet about the Dapr distributed programming framework at dapr.io'
-== APP == info: Program[1283986522]
-== APP ==       Received message from the conversation API: 'Here's a witty sonnet about the Dapr distributed programming framework:
-== APP == 
-== APP == O Dapr, thou art a framework most divine,
-== APP == Distributed apps, thy specialty so fine.
-== APP == With microservices, thou dost unite,
-== APP == And make cloud-native dreams take flight.
-== APP == 
-== APP == Thy building blocks, like stars in cosmic dance,
-== APP == State management, pub/sub, and more enhance.
-== APP == Polyglot and platform-agnostic too,
-== APP == Developers swoon, their hearts you woo.
-== APP == 
-== APP == From Kubernetes to edge, you scale with ease,
-== APP == Your sidecar pattern doth the experts please.
-== APP == Open-source and loved by geeks galore,
-== APP == At dapr.io, they come to explore.
-== APP == 
-== APP == Though some may mock my verse as quite absurd,
-== APP == I say Dapr's praises must be heard!
-== APP ==       '
-Exited App successfully
-```
-
-### What happened?
-
-#### `conversation.yaml` LLM component
-
-In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components) directly of the quickstart, the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the Anthropic LLM component. 
-
-```yml
-apiVersion: dapr.io/v1alpha1
-kind: Component
-metadata:
-  name: conversation
-spec:
-  type: conversation.anthropic
-  version: v1
-  metadata:
-    - name: key
-      secretKeyRef:
-        name: anthropic
-        key: anthropic
-auth:
-  secretStore: envvar-secrets
-```
-
-For authentication, the component also uses a secret store called [`envvar-secrets`](https://github.com/dapr/quickstarts/tree/master/conversation/components/envvar.yml). 
-
-#### `Program.cs` conversation app
-
-```csharp
-using System.Text;
-using Dapr.AI.Conversation;
-using Dapr.AI.Conversation.Extensions;
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDaprConversationClient();
-var app = builder.Build();
-
-var conversationClient = app.Services.GetRequiredService<DaprConversationClient>();
-var logger = app.Services.GetRequiredService<ILogger<Program>>();
-
-// Send prompt to send to the Anthropic LLM
-const string prompt = "Please write a witty sonnet about the Dapr distributed programming framework at dapr.io";
-var response = await conversationClient.ConverseAsync("conversation",
-        [new(prompt, DaprConversationRole.Generic)]);
-Log.LogRequest(logger, prompt);
-
-var stringBuilder = new StringBuilder();
-foreach (var resp in response.Outputs)
-{
-        stringBuilder.AppendLine(resp.Result);
-}
-Log.LogResponse(logger, stringBuilder.ToString());
-
-// Output log with response from LLM
-static partial class Log
-{
-        [LoggerMessage(LogLevel.Information, "Sent prompt to conversation API: '{message}'")]
-        internal static partial void LogRequest(ILogger logger, string message);
-
-        [LoggerMessage(LogLevel.Information, "Received message from the conversation API: '{message}'")]
-        internal static partial void LogResponse(ILogger logger, string message);
-}
+== APP - conversation == Input sent: What is dapr?
+== APP - conversation == Output response: What is dapr?
 ```
 
 {{% /codetab %}}
@@ -180,76 +365,25 @@ From the root of the Quickstarts directory, navigate into the conversation direc
 cd conversation/go/sdk/conversation
 ```
 
+Install the dependencies:
+
+```bash
+go build .
+```
+
 ### Step 3: Launch the conversation service
 
 Start the conversation service with the following command:
 
 ```bash
-
+dapr run --app-id conversation --resources-path ../../../components/ -- go run .
 ```
 
 **Expected output**
 
 ```
-
-```
-
-### What happened?
-
-#### `conversation.yaml` LLM component
-
-In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components) directly of the quickstart, the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the Anthropic LLM component. 
-
-```yml
-apiVersion: dapr.io/v1alpha1
-kind: Component
-metadata:
-  name: echo
-spec:
-  type: conversation.echo
-  version: v1
-```
-
-For authentication, the component also uses a secret store called [`envvar-secrets`](https://github.com/dapr/quickstarts/tree/master/conversation/components/envvar.yml). 
-
-#### `conversation.go` conversation app
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"log"
-
-	dapr "github.com/dapr/go-sdk/client"
-)
-
-func main() {
-	client, err := dapr.NewClient()
-	if err != nil {
-		panic(err)
-	}
-
-	input := dapr.ConversationInput{
-		Message: "hello world",
-		// Role:     nil, // Optional
-		// ScrubPII: nil, // Optional
-	}
-
-	fmt.Printf("conversation input: %s\n", input.Message)
-
-	var conversationComponent = "echo"
-
-	request := dapr.NewConversationRequest(conversationComponent, []dapr.ConversationInput{input})
-
-	resp, err := client.ConverseAlpha1(context.Background(), request)
-	if err != nil {
-		log.Fatalf("err: %v", err)
-	}
-
-	fmt.Printf("conversation output: %s\n", resp.Outputs[0].Result)
-}
+== APP - conversation == Input sent: What is dapr?
+== APP - conversation == Output response: What is dapr?
 ```
 
 {{% /codetab %}}
@@ -270,9 +404,11 @@ Join the discussion in our [discord channel](https://discord.com/channels/778680
 
 ## Next steps
 
-- SDK samples of this quickstart:
-  - [.NET](https://github.com/dapr/quickstarts/tree/master/conversation/go/http)
-  - [Go](todo)
+- HTTP samples of this quickstart:
+  - [Python](https://github.com/dapr/quickstarts/tree/master/conversation/python/http)
+  - [JavaScript](todo)
+  - [.NET](https://github.com/dapr/quickstarts/tree/master/conversation/csharp/http)
+  - [Go](https://github.com/dapr/quickstarts/tree/master/conversation/go/http)
 - Learn more about [the conversation building block]({{< ref conversation-overview.md >}})
 
 {{< button text="Explore Dapr tutorials  >>" page="getting-started/tutorials/_index.md" >}}
