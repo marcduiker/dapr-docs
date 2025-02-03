@@ -10,7 +10,7 @@ description: Get started with the Dapr conversation building block
 The conversation building block is currently in **alpha**. 
 {{% /alert %}}
 
-Let's take a look at how the [Dapr conversation building block]({{< ref conversation-overview.md >}}) makes interacting with the Anthropic LLM easier. In this quickstart, you use the Anthropic component to communicate with the LLM and ask it for a poem about Dapr. 
+Let's take a look at how the [Dapr conversation building block]({{< ref conversation-overview.md >}}) makes interacting with the LLM component easier. In this quickstart, you use the Anthropic component to communicate with the LLM and ask it for a poem about Dapr. 
 
 {{< tabs ".NET" Go >}}
 
