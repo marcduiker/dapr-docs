@@ -143,7 +143,11 @@ id = "G-60C6Q1ETC1"
   [[module.mounts]]
     source = "../translations/docs-zh/translated_content/zh_CN/sdks_js"
     target = "content/developing-applications/sdks/js"
-    lang = "zh-hans"       
+    lang = "zh-hans"
+  [[module.mounts]]
+    source = "../translations/docs-zh/translated_content/zh_CN/sdks_rust"
+    target = "content/developing-applications/sdks/rust"
+    lang = "zh-hans"
   [[module.mounts]]
     source = "../translations/docs-zh/translated_content/zh_CN/pluggable-components/dotnet"
     target = "content/developing-applications/develop-components/pluggable-components/pluggable-components-sdks/pluggable-components-dotnet"
