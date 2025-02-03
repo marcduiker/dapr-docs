@@ -507,10 +507,13 @@ The `order-processor` console app starts and manages the lifecycle of an order p
 For this example, you will need:
 
 - [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started).
-- [.NET SDK or .NET 6 SDK installed](https://dotnet.microsoft.com/download).
 <!-- IGNORE_LINKS -->
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 <!-- END_IGNORE -->
+- [.NET 7](https://dotnet.microsoft.com/download/dotnet/7.0), [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) or [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) installed
+
+**NOTE:** .NET 7 is the minimally supported version of .NET by Dapr.Workflows in Dapr v1.15. Only .NET 8 and .NET 9
+will be supported in Dapr v1.16 and later releases.
 
 ### Step 2: Set up the environment
 
