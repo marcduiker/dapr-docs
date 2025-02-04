@@ -20,7 +20,7 @@ Not using CloudEvents disables support for tracing, event deduplication per mess
 
 To disable CloudEvent wrapping, set the `rawPayload` metadata to `true` as part of the publishing request. This allows subscribers to receive these messages without having to parse the CloudEvent schema.
 
-{{< tabs curl ".NET" "Python SDK" "PHP SDK">}}
+{{< tabs curl ".NET" "Python" "PHP">}}
 
 {{% codetab %}}
 ```bash
