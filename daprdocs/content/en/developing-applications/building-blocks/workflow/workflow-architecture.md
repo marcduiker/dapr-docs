@@ -6,7 +6,9 @@ weight: 4000
 description: "The Dapr Workflow engine architecture"
 ---
 
-[Dapr Workflows]({{< ref "workflow-overview.md" >}}) allow developers to define workflows using ordinary code in a variety of programming languages. The workflow engine runs inside of the Dapr sidecar and orchestrates workflow code deployed as part of your application. This article describes:
+[Dapr Workflows]({{< ref "workflow-overview.md" >}}) allow developers to define workflows using ordinary code in a variety of programming languages. The workflow engine runs inside of the Dapr sidecar and orchestrates workflow code deployed as part of your application. Dapr Workflows are built on top of Dapr Actors, which serve as the sole backend implementation, providing durability and scalability for workflow execution.
+
+This article describes:
 
 - The architecture of the Dapr Workflow engine
 - How the workflow engine interacts with application code
@@ -122,7 +124,7 @@ Activity actors are short-lived:
 
 ### Reminder usage and execution guarantees
 
-The Dapr Workflow ensures workflow fault-tolerance by using [actor reminders]({{< ref "howto-actors.md#actor-timers-and-reminders" >}}) to recover from transient system failures. Prior to invoking application workflow code, the workflow or activity actor will create a new reminder. If the application code executes without interruption, the reminder is deleted. However, if the node or the sidecar hosting the associated workflow or activity crashes, the reminder will reactivate the corresponding actor and the execution will be retried.
+The Dapr Workflow ensures workflow fault-tolerance by using [actor reminders]({{< ref "actor-timers-and-reminders.md" >}}) to recover from transient system failures. Prior to invoking application workflow code, the workflow or activity actor will create a new reminder. If the application code executes without interruption, the reminder is deleted. However, if the node or the sidecar hosting the associated workflow or activity crashes, the reminder will reactivate the corresponding actor and the execution will be retried.
 
 <img src="/images/workflow-overview/workflow-actor-reminder-flow.png" width=600 alt="Diagram showing the process of invoking workflow actors"/>
 
