@@ -45,7 +45,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd service_invocation/python/http
+cd quickstarts/service_invocation/python/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -191,7 +191,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd service_invocation/javascript/http
+cd quickstarts/service_invocation/javascript/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -331,7 +331,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd service_invocation/csharp/http
+cd quickstarts/service_invocation/csharp/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -439,13 +439,11 @@ app.MapPost("/orders", (Order order) =>
 In the Program.cs file for the `checkout` service, you'll notice there's no need to rewrite your app code to use Dapr's service invocation. You can enable service invocation by simply adding the `dapr-app-id` header, which specifies the ID of the target service.
 
 ```csharp
-var client = new HttpClient();
-client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+var client = DaprClient.CreateInvokeHttpClient(appId: "order-processor");
+var cts = new CancellationTokenSource();
 
-client.DefaultRequestHeaders.Add("dapr-app-id", "order-processor");
-
-var response = await client.PostAsync($"{baseURL}/orders", content);
-    Console.WriteLine("Order passed: " + order);
+var response = await client.PostAsJsonAsync("/orders", order, cts.Token);
+Console.WriteLine("Order passed: " + order);
 ```
 
 {{% /codetab %}}
@@ -477,7 +475,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd service_invocation/java/http
+cd quickstarts/service_invocation/java/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -616,7 +614,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd service_invocation/go/http
+cd quickstarts/service_invocation/go/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -765,7 +763,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd service_invocation/python/http/order-processor
+cd quickstarts/service_invocation/python/http/order-processor
 ```
 
 Install the dependencies and build the application:
@@ -800,7 +798,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd service_invocation/python/http/checkout
+cd quickstarts/service_invocation/python/http/checkout
 ```
 
 Install the dependencies and build the application:
@@ -906,7 +904,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd service_invocation/javascript/http/order-processor
+cd quickstarts/service_invocation/javascript/http/order-processor
 ```
 
 Install the dependencies:
@@ -934,7 +932,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd service_invocation/javascript/http/checkout
+cd quickstarts/service_invocation/javascript/http/checkout
 ```
 
 Install the dependencies:
@@ -1038,7 +1036,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd service_invocation/csharp/http/order-processor
+cd quickstarts/service_invocation/csharp/http/order-processor
 ```
 
 Install the dependencies:
@@ -1070,7 +1068,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd service_invocation/csharp/http/checkout
+cd quickstarts/service_invocation/csharp/http/checkout
 ```
 
 Install the dependencies:
@@ -1089,13 +1087,11 @@ dapr run --app-id checkout --app-protocol http --dapr-http-port 3500 -- dotnet r
 In the Program.cs file for the `checkout` service, you'll notice there's no need to rewrite your app code to use Dapr's service invocation. You can enable service invocation by simply adding the `dapr-app-id` header, which specifies the ID of the target service.
 
 ```csharp
-var client = new HttpClient();
-client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+var client = DaprClient.CreateInvokeHttpClient(appId: "order-processor");
+var cts = new CancellationTokenSource();
 
-client.DefaultRequestHeaders.Add("dapr-app-id", "order-processor");
-
-var response = await client.PostAsync($"{baseURL}/orders", content);
-    Console.WriteLine("Order passed: " + order);
+var response = await client.PostAsJsonAsync("/orders", order, cts.Token);
+Console.WriteLine("Order passed: " + order);
 ```
 
 ### Step 5: Use with Multi-App Run
@@ -1178,7 +1174,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd service_invocation/java/http/order-processor
+cd quickstarts/service_invocation/java/http/order-processor
 ```
 
 Install the dependencies:
@@ -1206,7 +1202,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd service_invocation/java/http/checkout
+cd quickstarts/service_invocation/java/http/checkout
 ```
 
 Install the dependencies:
@@ -1309,7 +1305,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd service_invocation/go/http/order-processor
+cd quickstarts/service_invocation/go/http/order-processor
 ```
 
 Install the dependencies:
@@ -1343,7 +1339,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd service_invocation/go/http/checkout
+cd quickstarts/service_invocation/go/http/checkout
 ```
 
 Install the dependencies:
