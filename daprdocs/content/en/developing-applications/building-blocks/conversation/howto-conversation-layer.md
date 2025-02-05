@@ -34,6 +34,28 @@ spec:
   version: v1
 ```
 
+### Use the OpenAI component
+
+To interface with a real LLM, use one of the other [supported conversation components]({{< ref "supported-conversation" >}}), including OpenAI, Hugging Face, Anthropic, DeepSeek, and more.
+
+For example, to swap out the `echo` mock component with an `OpenAI` component, replace the `conversation.yaml` file with the following. You'll need to copy your API key into the component file.
+
+```
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: openai
+spec:
+  type: conversation.openai
+  metadata:
+  - name: key
+    value: <REPLACE_WITH_YOUR_KEY>
+  - name: model
+    value: gpt-4-turbo
+  - name: cacheTTL
+    value: 10m
+```
+
 ## Connect the conversation client
 
 The following examples use an HTTP client to send a POST request to Dapr's sidecar HTTP endpoint. You can also use [the Dapr SDK client instead]({{< ref "#related-links" >}}).
