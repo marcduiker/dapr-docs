@@ -45,7 +45,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd quickstarts/service_invocation/python/http
+cd service_invocation/python/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -191,7 +191,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd quickstarts/service_invocation/javascript/http
+cd service_invocation/javascript/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -331,7 +331,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd quickstarts/service_invocation/csharp/http
+cd service_invocation/csharp/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -475,7 +475,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd quickstarts/service_invocation/java/http
+cd service_invocation/java/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -614,7 +614,7 @@ git clone https://github.com/dapr/quickstarts.git
 From the root of the Quickstart clone directory, navigate to the quickstart directory.
 
 ```bash
-cd quickstarts/service_invocation/go/http
+cd service_invocation/go/http
 ```
 
 Install the dependencies for the `order-processor` and `checkout` apps:
@@ -763,7 +763,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd quickstarts/service_invocation/python/http/order-processor
+cd service_invocation/python/http/order-processor
 ```
 
 Install the dependencies and build the application:
@@ -798,7 +798,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd quickstarts/service_invocation/python/http/checkout
+cd service_invocation/python/http/checkout
 ```
 
 Install the dependencies and build the application:
@@ -904,7 +904,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd quickstarts/service_invocation/javascript/http/order-processor
+cd service_invocation/javascript/http/order-processor
 ```
 
 Install the dependencies:
@@ -932,7 +932,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd quickstarts/service_invocation/javascript/http/checkout
+cd service_invocation/javascript/http/checkout
 ```
 
 Install the dependencies:
@@ -1036,7 +1036,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd quickstarts/service_invocation/csharp/http/order-processor
+cd service_invocation/csharp/http/order-processor
 ```
 
 Install the dependencies:
@@ -1068,7 +1068,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd quickstarts/service_invocation/csharp/http/checkout
+cd service_invocation/csharp/http/checkout
 ```
 
 Install the dependencies:
@@ -1174,7 +1174,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd quickstarts/service_invocation/java/http/order-processor
+cd service_invocation/java/http/order-processor
 ```
 
 Install the dependencies:
@@ -1202,7 +1202,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd quickstarts/service_invocation/java/http/checkout
+cd service_invocation/java/http/checkout
 ```
 
 Install the dependencies:
@@ -1305,7 +1305,7 @@ In a terminal window, from the root of the Quickstart clone directory
 navigate to `order-processor` directory.
 
 ```bash
-cd quickstarts/service_invocation/go/http/order-processor
+cd service_invocation/go/http/order-processor
 ```
 
 Install the dependencies:
@@ -1339,7 +1339,7 @@ In a new terminal window, from the root of the Quickstart clone directory
 navigate to the `checkout` directory.
 
 ```bash
-cd quickstarts/service_invocation/go/http/checkout
+cd service_invocation/go/http/checkout
 ```
 
 Install the dependencies:
