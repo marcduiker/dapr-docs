@@ -32,14 +32,11 @@ curl -X "POST" http://localhost:3500/v1.0/publish/pubsub/TOPIC_A?metadata.rawPay
 
 ```csharp
 using Dapr.Client;
-using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddDapr();
 
 var app = builder.Build();
-
-app.MapGet("/", () => "Publisher API");
 
 app.MapPost("/publish", async (DaprClient daprClient) =>
 {
@@ -114,7 +111,7 @@ Dapr apps are also able to subscribe to raw events coming from existing pub/sub 
 
 ### Programmatically subscribe to raw events
 
-When subscribing programmatically, add the additional metadata entry for `rawPayload` - `isRawPayload` on .NET - so the Dapr sidecar automatically wraps the payloads into a CloudEvent that is compatible with current Dapr SDKs.
+When subscribing programmatically, add the additional metadata entry for `rawPayload` to allow the subscriber to receive a message that is not wrapped by a CloudEvent. For .NET, this metadata entry is called `isRawPayload`.
 
 {{< tabs ".NET" "Python" "PHP" >}}
 
@@ -124,11 +121,8 @@ When subscribing programmatically, add the additional metadata entry for `rawPay
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
-
-app.MapGet("/", () => "Subscriber API");
 
 app.MapGet("/dapr/subscribe", () =>
 {
@@ -141,7 +135,8 @@ app.MapGet("/dapr/subscribe", () =>
             route = "/messages",
             metadata = new Dictionary<string, string>
             {
-                { "isRawPayload", "true" }
+                { "isRawPayload", "true" },
+                { "content-type", "application/json" }
             }
         }
     };
