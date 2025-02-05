@@ -61,6 +61,44 @@ The Scheduler service is deployed as part of `dapr init -k`, or via the Dapr Hel
 
 When a Kubernetes namespace is deleted, all the Job and Actor Reminders corresponding to that namespace are deleted.
 
+## Back Up and Restore Scheduler Data
+
+In production environments, it's recommended to perform periodic backups of this data at an interval that aligns with your recovery point objectives.
+
+### Port Forward for Backup Operations
+
+To perform backup and restore operations, you'll need to access the embedded etcd instance. This requires port forwarding to expose the etcd ports (port 2379).
+
+#### Docker Compose Example
+
+Here's how to expose the etcd ports in a Docker Compose configuration for standalone mode:
+
+```yaml
+scheduler-1:
+    image: "diagrid/dapr/scheduler:dev110-linux-arm64"
+    command: ["./scheduler",
+      "--etcd-data-dir", "/var/run/dapr/scheduler",
+      "--replica-count", "3",
+      "--id","scheduler-1",
+      "--initial-cluster", "scheduler-1=http://scheduler-1:2380,scheduler-0=http://scheduler-0:2380,scheduler-2=http://scheduler-2:2380",
+      "--etcd-client-ports", "scheduler-0=2379,scheduler-1=2379,scheduler-2=2379",
+      "--etcd-client-http-ports", "scheduler-0=2330,scheduler-1=2330,scheduler-2=2330",
+      "--log-level=debug"
+    ]
+    ports:
+      - 2379:2379
+    volumes:
+      - ./dapr_scheduler/1:/var/run/dapr/scheduler
+    networks:
+      - network
+```
+
+When running in HA mode, you only need to expose the ports for one scheduler instance to perform backup operations.
+
+### Performing Backup and Restore
+
+Once you have access to the etcd ports, you can follow the [official etcd backup and restore documentation](https://etcd.io/docs/v3.5/op-guide/recovery/) to perform backup and restore operations. The process involves using standard etcd commands to create snapshots and restore from them.
+
 ## Disabling the Scheduler service
 
 If you are not using any features that require the Scheduler service (Jobs API, Actor Reminders, or Workflows), you can disable it by setting `global.scheduler.enabled=false`.
