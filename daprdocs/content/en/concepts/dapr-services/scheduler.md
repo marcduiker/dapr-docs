@@ -22,7 +22,7 @@ The diagram below shows how the Scheduler service is used via the jobs API when 
 
 Prior to Dapr v1.15, [actor reminders]({{< ref "actors-timers-reminders.md#actor-reminders" >}}) were run using the Placement service. Now, by default, the [`SchedulerReminders` feature flag]({{< ref "support-preview-features.md#current-preview-features" >}}) is set to `true`, and all new actor reminders you create are run using the Scheduler service to make them more scalable.
 
-When you deploy Dapr v1.15, any _existing_ actor reminders are automatically migrated from the Placement service to the Scheduler service as a one time operation for each actor type. There will be _no_ loss of reminder triggers during the migration. However, you can prevent this migration and keep the existing actor reminders running using the Placement service by setting the `SchedulerReminders` flag to `false` in the application configuration file for the actor type.
+When you deploy Dapr v1.15, any _existing_ actor reminders are automatically migrated from the Actor State Store to the Scheduler service as a one time operation for each actor type. There will be _no_ loss of reminder triggers during the migration. However, you can prevent this migration and keep the existing actor reminders running using the Actor State Store by setting the `SchedulerReminders` flag to `false` in the application configuration file for the actor type.
 
 ## Job triggering
 
@@ -30,11 +30,9 @@ When you deploy Dapr v1.15, any _existing_ actor reminders are automatically mig
 
 When the Scheduler service triggers a job there is no guarantee of job trigger ordering, meaning there are no guarantees on FIFO or LIFO trigger ordering. 
 
-### Job failure policy and staging queue
+### Job Failure Policy and Staging Queue
 
-When the Scheduler service triggers a job and it has a client side error, with the failure policy, the job is retried by default with a 1s interval and 3 maximum retries. A failure policy can be configured for a consistent retry or to drop a job. 
-- Actor reminder type jobs retry forever until successful completion.
-- Workflow reminders are one time, meaning they only trigger once successfully with a 1 second retry interval.
+When the Scheduler service triggers a job and it has a client side error, the job is retried by default with a 1s interval and 3 maximum retries. 
 
 For non-client side errors, for example, when a job cannot be sent to an available Dapr sidecar at trigger time, it is placed in a staging queue within the Scheduler service. Jobs remain in this queue until a suitable sidecar instance becomes available, at which point they are automatically sent to the appropriate Dapr sidecar instance. Jobs are sent back to a single replica for the same app ID that scheduled the job in a round robin manner.
 
