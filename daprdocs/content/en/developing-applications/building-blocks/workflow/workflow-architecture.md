@@ -6,7 +6,7 @@ weight: 4000
 description: "The Dapr Workflow engine architecture"
 ---
 
-[Dapr Workflows]({{< ref "workflow-overview.md" >}}) allow developers to define workflows using ordinary code in a variety of programming languages. The workflow engine runs inside of the Dapr sidecar and orchestrates workflow code deployed as part of your application. Dapr Workflows are built on top of Dapr Actors, which serve as the sole backend implementation, providing durability and scalability for workflow execution.
+[Dapr Workflows]({{< ref "workflow-overview.md" >}}) allow developers to define workflows using ordinary code in a variety of programming languages. The workflow engine runs inside of the Dapr sidecar and orchestrates workflow code deployed as part of your application. Dapr Workflows are built on top of Dapr Actors providing durability and scalability for workflow execution.
 
 This article describes:
 
@@ -86,7 +86,7 @@ Each workflow actor saves its state using the following keys in the configured s
 | `metadata` | Contains meta information about the workflow as a JSON blob and includes details such as the length of the inbox, the length of the history, and a 64-bit integer representing the workflow generation (for cases where the instance ID gets reused). The length information is used to determine which keys need to be read or written to when loading or saving workflow state updates. |
 
 {{% alert title="Warning" color="warning" %}}
-Workflow actor state will remain in the state store even after a workflow has completed. Creating a large number of workflows could result in unbounded storage usage. In a future release, data retention policies will be introduced that can automatically purge the state store of old workflow state.
+Workflow actor state remains in the state store even after a workflow has completed. Creating a large number of workflows could result in unbounded storage usage. To address this either purge workflows using their ID or directly delete entries in the workflow DB store. 
 {{% /alert %}}
 
 The following diagram illustrates the typical lifecycle of a workflow actor.
