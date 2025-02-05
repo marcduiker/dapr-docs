@@ -404,7 +404,7 @@ Join the discussion in our [discord channel](https://discord.com/channels/778680
 
 - HTTP samples of this quickstart:
   - [Python](https://github.com/dapr/quickstarts/tree/master/conversation/python/http)
-  - [JavaScript](todo)
+  - [JavaScript](https://github.com/dapr/quickstarts/tree/master/conversation/javascript/http)
   - [.NET](https://github.com/dapr/quickstarts/tree/master/conversation/csharp/http)
   - [Go](https://github.com/dapr/quickstarts/tree/master/conversation/go/http)
 - Learn more about [the conversation building block]({{< ref conversation-overview.md >}})
