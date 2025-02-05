@@ -32,7 +32,9 @@ When the Scheduler service triggers a job there is no guarantee of job trigger o
 
 ### Job Failure Policy and Staging Queue
 
-When the Scheduler service triggers a job and it has a client side error, with the failure policy, the job is retried by default with a 1s interval and 3 maximum retries. Failure policy can be configured for a consistent retry or to drop a job. Actor reminder type jobs will retry forever until successful completion. Workflow reminders are oneshot, meaning they will only trigger once successfully with a 1 second retry interval.
+When the Scheduler service triggers a job and it has a client side error, with the failure policy, the job is retried by default with a 1s interval and 3 maximum retries. A failure policy can be configured for a consistent retry or to drop a job. 
+- Actor reminder type jobs retry forever until successful completion.
+- Workflow reminders are one time, meaning they only trigger once successfully with a 1 second retry interval.
 
 For non-client side errors, for example, when a job cannot be sent to an available Dapr sidecar at trigger time, it is placed in a staging queue within the Scheduler service. Jobs remain in this queue until a suitable sidecar instance becomes available, at which point they are automatically sent to the appropriate Dapr sidecar instance. Jobs are sent back to a single replica for the same app ID that scheduled the job in a round robin manner.
 
