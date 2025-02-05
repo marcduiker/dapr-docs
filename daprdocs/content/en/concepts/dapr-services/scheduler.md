@@ -18,15 +18,30 @@ The diagram below shows how the Scheduler service is used via the jobs API when 
 
 <img src="/images/scheduler/scheduler-architecture.png" alt="Diagram showing the Scheduler control plane service and the jobs API">
 
-## Actor reminders
+## Actor Reminders
 
 Prior to Dapr v1.15, [actor reminders]({{< ref "actors-timers-reminders.md#actor-reminders" >}}) were run using the Placement service. Now, by default, the [`SchedulerReminders` feature flag]({{< ref "support-preview-features.md#current-preview-features" >}}) is set to `true`, and all new actor reminders you create are run using the Scheduler service to make them more scalable.
 
 When you deploy Dapr v1.15, any _existing_ actor reminders are automatically migrated from the Actor State Store to the Scheduler service as a one time operation for each actor type. There will be _no_ loss of reminder triggers during the migration. However, you can prevent this migration and keep the existing actor reminders running using the Actor State Store by setting the `SchedulerReminders` flag to `false` in the application configuration file for the actor type.
 
-## Job triggering
+## Job Locality
 
-### Job ordering
+### Default Job Behavior
+
+By default, when the Scheduler service triggers jobs, they are sent back to a single replica for the same app ID that scheduled the job in a randomly load balanced manner. This provides basic load balancing across your application's replicas, which is suitable for most use cases where strict locality isn't required.
+
+### Using Actor Reminders for Perfect Locality
+
+For users who require perfect job locality (having jobs triggered on the exact same host that created them), actor reminders provide a solution. To enforce perfect locality for a job:
+
+1. Create an actor type with a random UUID that is unique to the specific replica
+2. Use this actor type to create an actor reminder
+
+This approach ensures that the job will always be triggered on the same host which created it, rather than being randomly distributed among replicas.
+
+## Job Triggering
+
+### Job Ordering
 
 When the Scheduler service triggers a job there is no guarantee of job trigger ordering, meaning there are no guarantees on FIFO or LIFO trigger ordering. 
 
@@ -34,7 +49,7 @@ When the Scheduler service triggers a job there is no guarantee of job trigger o
 
 When the Scheduler service triggers a job and it has a client side error, the job is retried by default with a 1s interval and 3 maximum retries. 
 
-For non-client side errors, for example, when a job cannot be sent to an available Dapr sidecar at trigger time, it is placed in a staging queue within the Scheduler service. Jobs remain in this queue until a suitable sidecar instance becomes available, at which point they are automatically sent to the appropriate Dapr sidecar instance. Jobs are sent back to a single replica for the same app ID that scheduled the job in a round robin manner.
+For non-client side errors, for example, when a job cannot be sent to an available Dapr sidecar at trigger time, it is placed in a staging queue within the Scheduler service. Jobs remain in this queue until a suitable sidecar instance becomes available, at which point they are automatically sent to the appropriate Dapr sidecar instance.
 
 ## Self-hosted mode
 
