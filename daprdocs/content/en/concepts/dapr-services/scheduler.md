@@ -41,10 +41,6 @@ This approach ensures that the job will always be triggered on the same host whi
 
 ## Job Triggering
 
-### Job Ordering
-
-When the Scheduler service triggers a job there is no guarantee of job trigger ordering, meaning there are no guarantees on FIFO or LIFO trigger ordering. 
-
 ### Job Failure Policy and Staging Queue
 
 When the Scheduler service triggers a job and it has a client side error, the job is retried by default with a 1s interval and 3 maximum retries. 
@@ -57,7 +53,9 @@ The Scheduler service Docker container is started automatically as part of `dapr
 
 ## Kubernetes mode
 
-The Scheduler service is deployed as part of `dapr init -k`, or via the Dapr Helm charts. You can run Scheduler in high availability (HA) mode. [Learn more about setting HA mode in your Kubernetes service.]({{< ref "kubernetes-production.md#individual-service-ha-helm-configuration" >}})
+The Scheduler service is deployed as part of `dapr init -k`, or via the Dapr Helm charts. When running in Kubernetes mode, the Scheduler service is configured to run with exactly 3 replicas to ensure data integrity. 
+
+You can run Scheduler in high availability (HA) mode. [Learn more about setting HA mode in your Kubernetes service.]({{< ref "kubernetes-production.md#individual-service-ha-helm-configuration" >}})
 
 When a Kubernetes namespace is deleted, all the Job and Actor Reminders corresponding to that namespace are deleted.
 
