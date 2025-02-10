@@ -22,7 +22,21 @@ The diagram below shows how the Scheduler service is used via the jobs API when 
 
 Prior to Dapr v1.15, [actor reminders]({{< ref "actors-timers-reminders.md#actor-reminders" >}}) were run using the Placement service. Now, by default, the [`SchedulerReminders` feature flag]({{< ref "support-preview-features.md#current-preview-features" >}}) is set to `true`, and all new actor reminders you create are run using the Scheduler service to make them more scalable.
 
-When you deploy Dapr v1.15, any _existing_ actor reminders are automatically migrated from the Actor State Store to the Scheduler service as a one time operation for each actor type. There will be _no_ loss of reminder triggers during the migration. However, you can prevent this migration and keep the existing actor reminders running using the Actor State Store by setting the `SchedulerReminders` flag to `false` in the application configuration file for the actor type.
+When you deploy Dapr v1.15, any _existing_ actor reminders are automatically migrated from the Actor State Store to the Scheduler service as a one time operation for each actor type. Each replica will only migrate the reminders whose actor type and id are associated with that host. This means that only when all replicas implementing an actor type are upgraded to 1.15, will all the reminders associated with that type be migrated. There will be _no_ loss of reminder triggers during the migration. However, you can prevent this migration and keep the existing actor reminders running using the Actor State Store by setting the `SchedulerReminders` flag to `false` in the application configuration file for the actor type.
+
+To confirm that the migration was successful, check the Dapr sidecar logs for the following:
+
+```sh
+Running actor reminder migration from state store to scheduler
+```
+coupled with
+```sh
+Migrated X reminders from state store to scheduler successfully
+```
+or
+```sh
+Skipping migration, no missing scheduler reminders found
+```
 
 ## Job Locality
 
