@@ -32,6 +32,11 @@ Prompt caching optimizes performance by storing and reusing prompts that are oft
 
 The PII obfuscation feature identifies and removes any form of sensitve user information from a conversation response. Simply enable PII obfuscation on input and output data to protect your privacy and scrub sensitive details that could be used to identify an individual. 
 
+The PII scrubber obfuscates user information such as:
+- Phone numbers
+- Email addresses
+- IP address
+
 ## Demo
 
 Watch the demo presented during [Diagrid's Dapr v1.15 celebration](https://www.diagrid.io/videos/dapr-1-15-deep-dive) to see how the conversation API works using the .NET SDK.
