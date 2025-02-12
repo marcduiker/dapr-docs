@@ -10,7 +10,7 @@ description: Get started with the Dapr Workflow building block
 Redis is currently used as the state store component for Workflows in the Quickstarts. However, Redis does not support transaction rollbacks and should not be used in production as an actor state store.
 {{% /alert %}}
 
-Let's take a look at the Dapr [Workflow building block]({{< ref workflow-overview.md >}}). In this Quickstart, you'll create a simple console application to demonstrate Dapr's workflow programming model and the workflow management APIs.
+Let's take a look at the Dapr [Workflow building block]({{< ref workflow-overview.md >}}). In this Quickstart, you'll run an application to demonstrate Dapr's workflow programming model and the workflow management APIs.
 
 In this guide, you'll:
 
@@ -19,6 +19,22 @@ In this guide, you'll:
 - Review the workflow logic and the workflow activities and how they're represented in the code.
 
 <img src="/images/workflow-quickstart-overview.png" width=800 style="padding-bottom:15px;">
+
+The workflow simulates purchasing items from a store and includes activities to:
+
+- Notify the user about the order progress.
+- Verify if the inventory is sufficient.
+- Request purchase approval.
+- Process the payment.
+- Update the inventory with the order amount.
+
+In addition the workflow contains business logic to:
+
+- Stop the purchase if the inventory is insufficient.
+- Request approval for orders over a certain threshold.
+- Stop the purchase if the order is not approved.
+
+<img src="/images/workflow-quickstart-controlflow.png" width=800 style="padding-bottom:15px;">
 
 Select your preferred language-specific Dapr SDK before proceeding with the Quickstart.
 {{< tabs "Python" "JavaScript" ".NET" "Java" Go >}}
@@ -31,10 +47,10 @@ The `order-processor` console app starts and manages the `order_processing_workf
 - `notify_activity`: Utilizes a logger to print out messages throughout the workflow. These messages notify you when:
   - You have insufficient inventory
   - Your payment couldn't be processed, etc.
-- `process_payment_activity`: Processes and authorizes the payment.
 - `verify_inventory_activity`: Checks the state store to ensure there is enough inventory present for purchase.
+- `request_approval_activity`: Seeks approval from the manager if payment is greater than 5,000 USD.
+- `process_payment_activity`: Processes and authorizes the payment.
 - `update_inventory_activity`: Removes the requested items from the state store and updates the store with the new remaining inventory value.
-- `request_approval_activity`: Seeks approval from the manager if payment is greater than 50,000 USD.
 
 ### Step 1: Pre-requisites
 
@@ -145,7 +161,7 @@ class WorkflowConsoleApp:
         workflowRuntime = WorkflowRuntime(settings.DAPR_RUNTIME_HOST, settings.DAPR_GRPC_PORT)
         workflowRuntime.register_workflow(order_processing_workflow)
         workflowRuntime.register_activity(notify_activity)
-        workflowRuntime.register_activity(requst_approval_activity)
+        workflowRuntime.register_activity(request_approval_activity)
         workflowRuntime.register_activity(verify_inventory_activity)
         workflowRuntime.register_activity(process_payment_activity)
         workflowRuntime.register_activity(update_inventory_activity)
@@ -234,7 +250,7 @@ In `workflow.py`, the workflow is defined as a class with all of its associated 
         return OrderResult(processed=False)
     
     if order_payload["total_cost"] > 50000:
-        yield ctx.call_activity(requst_approval_activity, input=order_payload)
+        yield ctx.call_activity(request_approval_activity, input=order_payload)
         approval_task = ctx.wait_for_external_event("manager_approval")
         timeout_event = ctx.create_timer(timedelta(seconds=200))
         winner = yield when_any([approval_task, timeout_event])
@@ -279,7 +295,7 @@ In `workflow.py`, the workflow is defined as a class with all of its associated 
 The `order-processor` console app starts and manages the lifecycle of an order processing workflow that stores and retrieves data in a state store. The workflow consists of four workflow activities, or tasks:
 
 - `notifyActivity`: Utilizes a logger to print out messages throughout the workflow. These messages notify the user when there is insufficient inventory, their payment couldn't be processed, and more.
-- `reserveInventoryActivity`: Checks the state store to ensure that there is enough inventory present for purchase.
+- `verifyInventoryActivity`: Checks the state store to ensure that there is enough inventory present for purchase.
 - `requestApprovalActivity`: Requests approval for orders over a certain threshold
 - `processPaymentActivity`: Processes and authorizes the payment.
 - `updateInventoryActivity`: Updates the state store with the new remaining inventory value.
@@ -428,7 +444,7 @@ In the application file:
 ```javascript
 import { DaprWorkflowClient, WorkflowRuntime, DaprClient } from "@dapr/dapr-dev";
 import { InventoryItem, OrderPayload } from "./model";
-import { notifyActivity, orderProcessingWorkflow, processPaymentActivity, requestApprovalActivity, reserveInventoryActivity, updateInventoryActivity } from "./orderProcessingWorkflow";
+import { notifyActivity, orderProcessingWorkflow, processPaymentActivity, requestApprovalActivity, verifyInventoryActivity, updateInventoryActivity } from "./orderProcessingWorkflow";
 
 async function start() {
   // Update the gRPC client and worker to use a local address and port
@@ -453,7 +469,7 @@ async function start() {
   workflowWorker
   .registerWorkflow(orderProcessingWorkflow)
   .registerActivity(notifyActivity)
-  .registerActivity(reserveInventoryActivity)
+  .registerActivity(verifyInventoryActivity)
   .registerActivity(requestApprovalActivity)
   .registerActivity(processPaymentActivity)
   .registerActivity(updateInventoryActivity);
@@ -498,7 +514,8 @@ start().catch((e) => {
 The `order-processor` console app starts and manages the lifecycle of an order processing workflow that stores and retrieves data in a state store. The workflow consists of four workflow activities, or tasks:
 
 - `NotifyActivity`: Utilizes a logger to print out messages throughout the workflow
-- `ReserveInventoryActivity`: Checks the state store to ensure that there is enough inventory for the purchase
+- `VerifyInventoryActivity`: Checks the state store to ensure that there is enough inventory for the purchase
+- `RequestApprovalActivity`: Requests approval for orders over a certain threshold
 - `ProcessPaymentActivity`: Processes and authorizes the payment
 - `UpdateInventoryActivity`: Removes the requested items from the state store and updates the store with the new remaining inventory value
 
@@ -561,9 +578,9 @@ Expected output:
 == APP ==       Scheduling new OrderProcessingWorkflow orchestration with instance ID '6d2abcc9' and 47 bytes of input data.
 == APP == info: WorkflowConsoleApp.Activities.NotifyActivity[0]
 == APP ==       Received order 6d2abcc9 for 10 Cars at $15000
-== APP == info: WorkflowConsoleApp.Activities.ReserveInventoryActivity[0]
+== APP == info: WorkflowConsoleApp.Activities.VerifyInventoryActivity[0]
 == APP ==       Reserving inventory for order 6d2abcc9 of 10 Cars
-== APP == info: WorkflowConsoleApp.Activities.ReserveInventoryActivity[0]
+== APP == info: WorkflowConsoleApp.Activities.VerifyInventoryActivity[0]
 == APP ==       There are: 100, Cars available for purchase
 
 == APP == Your workflow has started. Here is the status of the workflow: Dapr.Workflow.WorkflowState
@@ -630,7 +647,8 @@ using Dapr.Workflow;
 
         // These are the activities that get invoked by the workflow(s).
         options.RegisterActivity<NotifyActivity>();
-        options.RegisterActivity<ReserveInventoryActivity>();
+        options.RegisterActivity<VerifyInventoryActivity>();
+        options.RegisterActivity<RequestApprovalActivity>();
         options.RegisterActivity<ProcessPaymentActivity>();
         options.RegisterActivity<UpdateInventoryActivity>();
     });
@@ -641,10 +659,10 @@ using Dapr.Workflow;
 // Generate a unique ID for the workflow
 string orderId = Guid.NewGuid().ToString()[..8];
 string itemToPurchase = "Cars";
-int ammountToPurchase = 10;
+int ammountToPurchase = 1;
 
 // Construct the order
-OrderPayload orderInfo = new OrderPayload(itemToPurchase, 15000, ammountToPurchase);
+OrderPayload orderInfo = new OrderPayload(itemToPurchase, 5000, ammountToPurchase);
 
 // Start the workflow
 Console.WriteLine("Starting workflow {0} purchasing {1} {2}", orderId, ammountToPurchase, itemToPurchase);
@@ -677,72 +695,113 @@ In `OrderProcessingWorkflow.cs`, the workflow is defined as a class with all of 
 using Dapr.Workflow;
 //...
 
-class OrderProcessingWorkflow : Workflow<OrderPayload, OrderResult>
+internal sealed partial class OrderProcessingWorkflow : Workflow<OrderPayload, OrderResult>
+{
+    public override async Task<OrderResult> RunAsync(WorkflowContext context, OrderPayload order)
     {
-        public override async Task<OrderResult> RunAsync(WorkflowContext context, OrderPayload order)
+        var logger = context.CreateReplaySafeLogger<OrderProcessingWorkflow>();
+        var orderId = context.InstanceId;
+
+        // Notify the user that an order has come through
+        await context.CallActivityAsync(nameof(NotifyActivity),
+            new Notification($"Received order {orderId} for {order.Quantity} {order.Name} at ${order.TotalCost}"));
+        LogOrderReceived(logger, orderId, order.Quantity, order.Name, order.TotalCost);
+
+        // Determine if there is enough of the item available for purchase by checking the inventory
+        var inventoryRequest = new InventoryRequest(RequestId: orderId, order.Name, order.Quantity);
+        var result = await context.CallActivityAsync<InventoryResult>(
+            nameof(VerifyInventoryActivity), inventoryRequest);
+        LogCheckInventory(logger, inventoryRequest);
+            
+        // If there is insufficient inventory, fail and let the user know 
+        if (!result.Success)
         {
-            string orderId = context.InstanceId;
-
-            // Notify the user that an order has come through
-            await context.CallActivityAsync(
-                nameof(NotifyActivity),
-                new Notification($"Received order {orderId} for {order.Quantity} {order.Name} at ${order.TotalCost}"));
-
-            string requestId = context.InstanceId;
-
-            // Determine if there is enough of the item available for purchase by checking the inventory
-            InventoryResult result = await context.CallActivityAsync<InventoryResult>(
-                nameof(ReserveInventoryActivity),
-                new InventoryRequest(RequestId: orderId, order.Name, order.Quantity));
-
-            // If there is insufficient inventory, fail and let the user know 
-            if (!result.Success)
-            {
-                // End the workflow here since we don't have sufficient inventory
-                await context.CallActivityAsync(
-                    nameof(NotifyActivity),
-                    new Notification($"Insufficient inventory for {order.Name}"));
-                return new OrderResult(Processed: false);
-            }
-
-            // There is enough inventory available so the user can purchase the item(s). Process their payment
-            await context.CallActivityAsync(
-                nameof(ProcessPaymentActivity),
-                new PaymentRequest(RequestId: orderId, order.Name, order.Quantity, order.TotalCost));
-
-            try
-            {
-                // There is enough inventory available so the user can purchase the item(s). Process their payment
-                await context.CallActivityAsync(
-                    nameof(UpdateInventoryActivity),
-                    new PaymentRequest(RequestId: orderId, order.Name, order.Quantity, order.TotalCost));                
-            }
-            catch (WorkflowTaskFailedException)
-            {
-                // Let them know their payment was processed
-                await context.CallActivityAsync(
-                    nameof(NotifyActivity),
-                    new Notification($"Order {orderId} Failed! You are now getting a refund"));
-                return new OrderResult(Processed: false);
-            }
-
-            // Let them know their payment was processed
-            await context.CallActivityAsync(
-                nameof(NotifyActivity),
-                new Notification($"Order {orderId} has completed!"));
-
-            // End the workflow with a success result
-            return new OrderResult(Processed: true);
+            // End the workflow here since we don't have sufficient inventory
+            await context.CallActivityAsync(nameof(NotifyActivity),
+                new Notification($"Insufficient inventory for {order.Name}"));
+            LogInsufficientInventory(logger, order.Name);
+            return new OrderResult(Processed: false);
         }
+
+        if (order.TotalCost > 5000)
+        {
+            await context.CallActivityAsync(nameof(RequestApprovalActivity),
+                new ApprovalRequest(orderId, order.Name, order.Quantity, order.TotalCost));
+
+            var approvalResponse = await context.WaitForExternalEventAsync<ApprovalResponse>(
+                eventName: "ApprovalResponse",
+                timeout: TimeSpan.FromSeconds(30));
+            if (!approvalResponse.IsApproved)
+            {
+                await context.CallActivityAsync(nameof(NotifyActivity),
+                    new Notification($"Order {orderId} was not approved"));
+                LogOrderNotApproved(logger, orderId);
+                return new OrderResult(Processed: false);
+            }
+        }
+
+        // There is enough inventory available so the user can purchase the item(s). Process their payment
+        var processPaymentRequest = new PaymentRequest(RequestId: orderId, order.Name, order.Quantity, order.TotalCost);
+        await context.CallActivityAsync(nameof(ProcessPaymentActivity),processPaymentRequest);
+        LogPaymentProcessing(logger, processPaymentRequest);
+
+        try
+        {
+            // Update the available inventory
+            var paymentRequest = new PaymentRequest(RequestId: orderId, order.Name, order.Quantity, order.TotalCost); 
+            await context.CallActivityAsync(nameof(UpdateInventoryActivity), paymentRequest);
+            LogInventoryUpdate(logger, paymentRequest);
+        }
+        catch (TaskFailedException)
+        {
+            // Let them know their payment was processed, but there's insufficient inventory, so they're getting a refund
+            await context.CallActivityAsync(nameof(NotifyActivity),
+                new Notification($"Order {orderId} Failed! You are now getting a refund"));
+            LogRefund(logger, orderId);
+            return new OrderResult(Processed: false);
+        }
+
+        // Let them know their payment was processed
+        await context.CallActivityAsync(nameof(NotifyActivity), new Notification($"Order {orderId} has completed!"));
+        LogSuccessfulOrder(logger, orderId);
+
+        // End the workflow with a success result
+        return new OrderResult(Processed: true);
     }
+
+    [LoggerMessage(LogLevel.Information, "Received request ID '{request}' for {quantity} {name} at ${totalCost}")]
+    static partial void LogOrderReceived(ILogger logger, string request, int quantity, string name, double totalCost);
+    
+    [LoggerMessage(LogLevel.Information, "Checked inventory for request ID '{request}'")]
+    static partial void LogCheckInventory(ILogger logger, InventoryRequest request);
+    
+    [LoggerMessage(LogLevel.Information, "Insufficient inventory for order {orderName}")]
+    static partial void LogInsufficientInventory(ILogger logger, string orderName);
+    
+    [LoggerMessage(LogLevel.Information, "Order {orderName} was not approved")]
+    static partial void LogOrderNotApproved(ILogger logger, string orderName);
+
+    [LoggerMessage(LogLevel.Information, "Processed payment request as there's sufficient inventory to proceed: {request}")]
+    static partial void LogPaymentProcessing(ILogger logger, PaymentRequest request);
+
+    [LoggerMessage(LogLevel.Information, "Updating available inventory for {request}")]
+    static partial void LogInventoryUpdate(ILogger logger, PaymentRequest request);
+
+    [LoggerMessage(LogLevel.Information, "Order {orderId} failed due to insufficient inventory - processing refund")]
+    static partial void LogRefund(ILogger logger, string orderId);
+
+    [LoggerMessage(LogLevel.Information, "Order {orderId} has completed")]
+    static partial void LogSuccessfulOrder(ILogger logger, string orderId);
+}
 ```
 
 #### `order-processor/Activities` directory
 
-The `Activities` directory holds the four workflow activities used by the workflow, defined in the following files:
+The `Activities` directory holds the five workflow activities used by the workflow, defined in the following files:
 
 - `NotifyActivity.cs`
-- `ReserveInventoryActivity.cs`
+- `VerifyInventoryActivity.cs`
+- `RequestApprovalActivity.cs`
 - `ProcessPaymentActivity.cs`
 - `UpdateInventoryActivity.cs`
 
