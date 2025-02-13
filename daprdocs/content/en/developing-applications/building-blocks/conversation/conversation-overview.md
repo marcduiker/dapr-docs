@@ -33,17 +33,17 @@ Prompt caching optimizes performance by storing and reusing prompts that are oft
 The PII obfuscation feature identifies and removes any form of sensitve user information from a conversation response. Simply enable PII obfuscation on input and output data to protect your privacy and scrub sensitive details that could be used to identify an individual. 
 
 The PII scrubber obfuscates the following user information:
-- Phone numbers
-- Email addresses
+- Phone number
+- Email address
 - IP address
-- Street Address
-- Credit Cards
-- SSN
+- Street address
+- Credit cards
+- Social Security number
 - ISBN
-- Mac Address
-- SHA1 Hex
-- SHA256 Hex
-- MD5 Hex
+- Media Access Control (MAC) address
+- Secure Hash Algorithm 1 (SHA-1) hex
+- SHA-256 hex
+- MD5 hex
 
 ## Demo
 
