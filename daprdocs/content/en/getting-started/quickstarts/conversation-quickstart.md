@@ -17,10 +17,276 @@ You can try out this conversation quickstart by either:
 - [Running the application in this sample with the Multi-App Run template file]({{< ref "#run-the-app-with-the-template-file" >}}), or
 - [Running the application without the template]({{< ref "#run-the-app-without-the-template" >}})
 
+{{% alert title="Note" color="primary" %}}
+Currently, only the HTTP quickstart sample is available in Python and JavaScript.  
+{{% /alert %}}
 
 ## Run the app with the template file
 
-{{< tabs ".NET" Go >}}
+{{< tabs Python JavaScript ".NET" Go >}}
+
+ <!-- Python -->
+{{% codetab %}}
+
+
+### Step 1: Pre-requisites
+
+For this example, you will need:
+
+- [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started).
+- [Python 3.7+ installed](https://www.python.org/downloads/).
+<!-- IGNORE_LINKS -->
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+<!-- END_IGNORE -->
+
+### Step 2: Set up the environment
+
+Clone the [sample provided in the Quickstarts repo](https://github.com/dapr/quickstarts/tree/master/conversation).
+
+```bash
+git clone https://github.com/dapr/quickstarts.git
+```
+
+From the root of the Quickstarts directory, navigate into the conversation directory:
+
+```bash
+cd conversation/python/http/conversation
+```
+
+Install the dependencies:
+
+```bash
+pip3 install -r requirements.txt
+```
+
+### Step 3: Launch the conversation service
+
+Navigate back to the `http` directory and start the conversation service with the following command:
+
+```bash
+dapr run -f .
+```
+
+**Expected output**
+
+```
+== APP - conversation == Input sent: What is dapr?
+== APP - conversation == Output response: What is dapr?
+```
+
+### What happened?
+
+When you ran `dapr init` during Dapr install, the [`dapr.yaml` Multi-App Run template file]({{< ref "#dapryaml-multi-app-run-template-file" >}}) was generated in the `.dapr/components` directory. 
+
+Running `dapr run -f .` in this Quickstart started [conversation.go]({{< ref "#programcs-conversation-app" >}}).
+
+#### `dapr.yaml` Multi-App Run template file
+
+Running the [Multi-App Run template file]({{< ref multi-app-dapr-run >}}) with `dapr run -f .` starts all applications in your project. This Quickstart has only one application, so the `dapr.yaml` file contains the following: 
+
+```yml
+version: 1
+common:
+  resourcesPath: ../../components/
+apps:
+  - appID: conversation
+    appDirPath: ./conversation/
+    command: ["python3", "app.py"]
+```
+
+#### Echo mock LLM component
+
+In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components) directly of the quickstart, the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the echo LLM component. 
+
+```yml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: echo
+spec:
+  type: conversation.echo
+  version: v1
+```
+
+To interface with a real LLM, swap out the mock component with one of [the supported conversation components]({{< ref "supported-conversation" >}}). For example, to use an OpenAI component, see the [example in the conversation how-to guide]({{< ref "howto-conversation-layer.md#use-the-openai-component" >}})
+
+#### `app.py` conversation app
+
+In the application code:
+- The app sends an input "What is dapr?" to the echo mock LLM component.
+- The mock LLM echoes "What is dapr?". 
+
+```python
+import logging
+import requests
+import os
+
+logging.basicConfig(level=logging.INFO)
+
+base_url = os.getenv('BASE_URL', 'http://localhost') + ':' + os.getenv(
+                    'DAPR_HTTP_PORT', '3500')
+
+CONVERSATION_COMPONENT_NAME = 'echo'
+
+input = {
+		'name': 'echo',
+		'inputs': [{'message':'What is dapr?'}],
+		'parameters': {},
+		'metadata': {}
+    }
+
+# Send input to conversation endpoint
+result = requests.post(
+	url='%s/v1.0-alpha1/conversation/%s/converse' % (base_url, CONVERSATION_COMPONENT_NAME),
+	json=input
+)
+
+logging.info('Input sent: What is dapr?')
+
+# Parse conversation output
+data = result.json()
+output = data["outputs"][0]["result"]
+
+logging.info('Output response: ' + output)
+```
+
+{{% /codetab %}}
+
+ <!-- JavaScript -->
+{{% codetab %}}
+
+
+### Step 1: Pre-requisites
+
+For this example, you will need:
+
+- [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started).
+- [Latest Node.js installed](https://nodejs.org/).
+<!-- IGNORE_LINKS -->
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+<!-- END_IGNORE -->
+
+### Step 2: Set up the environment
+
+Clone the [sample provided in the Quickstarts repo](https://github.com/dapr/quickstarts/tree/master/conversation).
+
+```bash
+git clone https://github.com/dapr/quickstarts.git
+```
+
+From the root of the Quickstarts directory, navigate into the conversation directory:
+
+```bash
+cd conversation/javascript/http/conversation
+```
+
+Install the dependencies:
+
+```bash
+npm install
+```
+
+### Step 3: Launch the conversation service
+
+Navigate back to the `http` directory and start the conversation service with the following command:
+
+```bash
+dapr run -f .
+```
+
+**Expected output**
+
+```
+== APP - conversation == Input sent: What is dapr?
+== APP - conversation == Output response: What is dapr?
+```
+
+### What happened?
+
+When you ran `dapr init` during Dapr install, the [`dapr.yaml` Multi-App Run template file]({{< ref "#dapryaml-multi-app-run-template-file" >}}) was generated in the `.dapr/components` directory. 
+
+Running `dapr run -f .` in this Quickstart started [conversation.go]({{< ref "#programcs-conversation-app" >}}).
+
+#### `dapr.yaml` Multi-App Run template file
+
+Running the [Multi-App Run template file]({{< ref multi-app-dapr-run >}}) with `dapr run -f .` starts all applications in your project. This Quickstart has only one application, so the `dapr.yaml` file contains the following: 
+
+```yml
+version: 1
+common:
+  resourcesPath: ../../components/
+apps:
+  - appID: conversation
+    appDirPath: ./conversation/
+    daprHTTPPort: 3502
+    command: ["npm", "run", "start"]
+```
+
+#### Echo mock LLM component
+
+In [`conversation/components`](https://github.com/dapr/quickstarts/tree/master/conversation/components) directly of the quickstart, the [`conversation.yaml` file](https://github.com/dapr/quickstarts/tree/master/conversation/components/conversation.yml) configures the echo LLM component. 
+
+```yml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: echo
+spec:
+  type: conversation.echo
+  version: v1
+```
+
+To interface with a real LLM, swap out the mock component with one of [the supported conversation components]({{< ref "supported-conversation" >}}). For example, to use an OpenAI component, see the [example in the conversation how-to guide]({{< ref "howto-conversation-layer.md#use-the-openai-component" >}})
+
+#### `index.js` conversation app
+
+In the application code:
+- The app sends an input "What is dapr?" to the echo mock LLM component.
+- The mock LLM echoes "What is dapr?". 
+
+```javascript
+const conversationComponentName = "echo";
+
+async function main() {
+  const daprHost = process.env.DAPR_HOST || "http://localhost";
+  const daprHttpPort = process.env.DAPR_HTTP_PORT || "3500";
+
+  const inputBody = {
+    name: "echo",
+    inputs: [{ message: "What is dapr?" }],
+    parameters: {},
+    metadata: {},
+  };
+
+  const reqURL = `${daprHost}:${daprHttpPort}/v1.0-alpha1/conversation/${conversationComponentName}/converse`;
+
+  try {
+    const response = await fetch(reqURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inputBody),
+    });
+
+    console.log("Input sent: What is dapr?");
+
+    const data = await response.json();
+    const result = data.outputs[0].result;
+    console.log("Output response:", result);
+  } catch (error) {
+    console.error("Error:", error.message);
+    process.exit(1);
+  }
+}
+
+main().catch((error) => {
+  console.error("Unhandled error:", error);
+  process.exit(1);
+});
+```
+
+{{% /codetab %}}
 
  <!-- .NET -->
 {{% codetab %}}
@@ -282,7 +548,111 @@ func main() {
 
 ## Run the app without the template
 
-{{< tabs ".NET" Go >}}
+{{< tabs Python JavaScript ".NET" Go >}}
+
+ <!-- Python -->
+{{% codetab %}}
+
+
+### Step 1: Pre-requisites
+
+For this example, you will need:
+
+- [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started).
+- [Python 3.7+ installed](https://www.python.org/downloads/).
+<!-- IGNORE_LINKS -->
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+<!-- END_IGNORE -->
+
+### Step 2: Set up the environment
+
+Clone the [sample provided in the Quickstarts repo](https://github.com/dapr/quickstarts/tree/master/conversation).
+
+```bash
+git clone https://github.com/dapr/quickstarts.git
+```
+
+From the root of the Quickstarts directory, navigate into the conversation directory:
+
+```bash
+cd conversation/python/http/conversation
+```
+
+Install the dependencies:
+
+```bash
+pip3 install -r requirements.txt
+```
+
+### Step 3: Launch the conversation service
+
+Navigate back to the `http` directory and start the conversation service with the following command:
+
+```bash
+dapr run --app-id conversation --resources-path ../../../components -- python3 app.py
+```
+
+> **Note**: Since Python3.exe is not defined in Windows, you may need to use `python app.py` instead of `python3 app.py`.
+
+**Expected output**
+
+```
+== APP - conversation == Input sent: What is dapr?
+== APP - conversation == Output response: What is dapr?
+```
+
+{{% /codetab %}}
+
+ <!-- JavaScript -->
+{{% codetab %}}
+
+
+### Step 1: Pre-requisites
+
+For this example, you will need:
+
+- [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started).
+- [Latest Node.js installed](https://nodejs.org/).
+<!-- IGNORE_LINKS -->
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+<!-- END_IGNORE -->
+
+### Step 2: Set up the environment
+
+Clone the [sample provided in the Quickstarts repo](https://github.com/dapr/quickstarts/tree/master/conversation).
+
+```bash
+git clone https://github.com/dapr/quickstarts.git
+```
+
+From the root of the Quickstarts directory, navigate into the conversation directory:
+
+```bash
+cd conversation/javascript/http/conversation
+```
+
+Install the dependencies:
+
+```bash
+npm install
+```
+
+### Step 3: Launch the conversation service
+
+Navigate back to the `http` directory and start the conversation service with the following command:
+
+```bash
+dapr run --app-id conversation --resources-path ../../../components/ -- npm run start
+```
+
+**Expected output**
+
+```
+== APP - conversation == Input sent: What is dapr?
+== APP - conversation == Output response: What is dapr?
+```
+
+{{% /codetab %}}
 
  <!-- .NET -->
 {{% codetab %}}
