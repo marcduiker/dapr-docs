@@ -407,5 +407,46 @@ To bring updates to the SDK docs live to the Dapr docs site, you need to perform
 
 1. Change into the `dapr/docs` context to commit, push, and create a PR.
 
-## Next steps
+## Updating Hugo & Docsy
 
+Upgrade to the latest versions of Hugo and Docsy periodically to take advantage of new features and fixes.
+
+### Hugo
+
+Follow these steps to update Hugo to the latest version. Check Hugo's [release page](https://github.com/gohugoio/hugo/releases) for the latest version.
+
+1. Update the Hugo version in `.devcontainer/devcontainer.json`:
+
+   ```json
+   "ghcr.io/devcontainers/features/hugo:1": {
+      "extended": true,
+      "version": "0.154.5"
+   },
+   ```
+
+2. Update the Hugo version in the GitHub Actions workflow located in `.github/workflows/website-root.yml` and `.github/workflows/website-vX-Y.yml`:
+
+   ```yaml
+ - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v3.0.0
+      with:
+         hugo-version: 0.154.5
+   ```
+
+3. Test locally in the devcontainer and in a PR to ensure the site builds correctly.
+
+### Docsy
+
+Follow these steps to update Docsy to the latest version. Check Docsy's [release page](https://github.com/google/docsy/releases) for the latest version.
+
+1. Install using hugo modules:
+
+   ```bash
+   hugo mod get -u github.com/google/docsy@v0.13.0
+   ```
+
+2. Install the dependencies:
+
+   ```bash
+   npm install
+   ```

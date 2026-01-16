@@ -31,11 +31,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3.0.0
         with:
-          hugo-version: 0.147.9
+          hugo-version: 0.154.5
           extended: true
       - name: Setup Submodules
         run: |

@@ -1,7 +1,17 @@
+// Enable Google Fonts
+$td-enable-google-fonts: true;
+
 $primary:#0D2192;
 $secondary: #3ea9f5;
 $highlight1:#ff4e00;
 $highlight2: #efca08;
+
+// Font weights
+$font-weight-light: 300 !default;
+$font-weight-normal: 400 !default;
+$font-weight-medium: 500 !default;
+$font-weight-bold: 700 !default;
+$font-weight-body-text: $font-weight-normal !default;
 
 // Sidebar colors
 $td-sidebar-tree-root-color: $primary;
